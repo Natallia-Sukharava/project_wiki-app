@@ -1,0 +1,19 @@
+body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    background: #f7f7f7;
+    color: #333;
+  }
+  
+  .main-container {
+    max-width: 800px;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .page h2 {
+    margin-bottom: 15px;
+  }  
