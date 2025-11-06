@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "../../styles/ArticleForm.css";
 
 function ArticleForm() {
@@ -11,6 +13,12 @@ function ArticleForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!title.trim() || !content.trim()) {
+      toast.warn("Please enter both title and content before submitting.");
+      return;
+    }
+
     try {
       const response = await fetch("http://localhost:4000/api/articles", {
         method: "POST",
@@ -19,32 +27,41 @@ function ArticleForm() {
       });
 
       if (!response.ok) {
-        throw new Error("Server is unavailable or request failed.");
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to create article");
       }
 
-      const data = await response.json();
-      alert("Article created successfully!");
+      await response.json();
+      toast.success("Article created successfully!");
       setTitle("");
       setContent("");
-      navigate("/");
+
+      setTimeout(() => navigate("/"), 3000);
     } catch (error) {
       console.error("Error saving article:", error);
-      alert("Failed to connect to server. Please make sure backend is running.");
+      toast.error(error.message || "Failed to connect to server.");
     }
   };
 
   return (
-    <form className="article-form" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Enter title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        required
-      />
-      <ReactQuill value={content} onChange={setContent} />
-      <button type="submit">Save</button>
-    </form>
+    <div className="article-form-container">
+      <form className="article-form" onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Enter title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          required
+        />
+        <ReactQuill
+          value={content}
+          onChange={setContent}
+          placeholder="Write your article content here..."
+        />
+        <button type="submit">Save</button>
+      </form>
+      <ToastContainer position="top-center" autoClose={5000} />
+    </div>
   );
 }
 

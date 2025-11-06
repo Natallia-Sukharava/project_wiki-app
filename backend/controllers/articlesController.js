@@ -2,10 +2,10 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const currentFile = fileURLToPath(import.meta.url);
+const currentDir = path.dirname(currentFile);
 
-const dataDir = path.join(__dirname, "../data");
+const dataDir = path.join(currentDir, "../data");
 
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir);

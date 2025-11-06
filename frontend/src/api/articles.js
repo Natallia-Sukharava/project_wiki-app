@@ -31,13 +31,13 @@ export const createArticle = async (articleData) => {
     });
 
     if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`Server error: ${response.status} — ${text}`);
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || "Failed to create article");
     }
 
     return await response.json();
   } catch (error) {
-    console.error("Error saving article:", error);
+    console.error("Error creating article:", error);
     throw error;
   }
 };
