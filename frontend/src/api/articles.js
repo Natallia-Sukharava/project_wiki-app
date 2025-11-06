@@ -41,3 +41,35 @@ export const createArticle = async (articleData) => {
     throw error;
   }
 };
+export const updateArticle = async (id, articleData) => {
+  try {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(articleData),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || "Failed to update article");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating article:", error);
+    throw error;
+  }
+};
+export const deleteArticle = async (id) => {
+  try {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || "Failed to delete article");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error deleting article:", error);
+    throw error;
+  }
+};

@@ -17,3 +17,27 @@ body {
   .page h2 {
     margin-bottom: 15px;
   }  
+  .home-container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .page-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #333;
+  }
+  
+  .loading-text {
+    text-align: center;
+    font-size: 1.1rem;
+    color: #666;
+  }
+  
+  .empty-message {
+    text-align: center;
+    color: #777;
+  }
+  

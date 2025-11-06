@@ -5,6 +5,7 @@ import Navbar from "./components/layout/Navbar";
 import HomePage from "./pages/HomePage";
 import ArticlePage from "./pages/ArticlePage";
 import NewArticlePage from "./pages/NewArticlePage";
+import EditArticlePage from "./pages/EditArticlePage";
 import "./styles/App.css";
 
 function App() {
@@ -16,8 +17,9 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/article/:id" element={<ArticlePage />} />
           <Route path="/new" element={<NewArticlePage />} />
+          <Route path="/edit/:id" element={<EditArticlePage />} />
         </Routes>
-        <ToastContainer position="top-right" autoClose={5000} />
+        <ToastContainer position="top-center" autoClose={5000} />
       </main>
     </Router>
   );

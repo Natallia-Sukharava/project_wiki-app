@@ -1,20 +1,46 @@
 .article-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .article-list li {
-    margin: 10px 0;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-  }
-  
-  .article-list a {
-    color: #007acc;
-    text-decoration: none;
-  }
-  
-  .article-list a:hover {
-    text-decoration: underline;
-  }  
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.article-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.article-title {
+  font-size: 1.1rem;
+  color: #007acc;
+  text-decoration: none;
+}
+
+.article-title:hover {
+  text-decoration: underline;
+}
+
+.article-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn,
+.delete-btn {
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
