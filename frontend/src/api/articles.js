@@ -1,4 +1,5 @@
 const API_URL = "http://localhost:4000/api/articles";
+export const wsUrl = "ws://localhost:4000/ws";
 
 export const getArticles = async () => {
   try {
@@ -71,5 +72,53 @@ export const deleteArticle = async (id) => {
   } catch (error) {
     console.error("Error deleting article:", error);
     throw error;
+  }
+};
+
+export const deleteAttachment = async (id, filename) => {
+  try {
+    const res = await fetch(`${API_URL}/${id}/attachments/${filename}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) throw new Error("Failed to delete attachment");
+
+    return await res.json();
+  } catch (error) {
+    console.error("Error deleting attachment:", error);
+    throw error;
+  }
+};
+
+export const getAttachments = async (id) => {
+  try {
+    const res = await fetch(`${API_URL}/${id}/attachments`);
+    if (!res.ok) throw new Error("Failed to load attachments");
+    return await res.json();
+  } catch (err) {
+    console.error("Error loading attachments:", err);
+    return [];
+  }
+};
+
+export const uploadAttachment = async (id, file) => {
+  try {
+    const fd = new FormData();
+    fd.append("file", file);
+
+    const res = await fetch(`${API_URL}/${id}/attachments`, {
+      method: "POST",
+      body: fd,
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || "Upload failed");
+    }
+
+    return await res.json();
+  } catch (err) {
+    console.error("Error uploading attachment:", err);
+    throw err; 
   }
 };

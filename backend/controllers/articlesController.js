@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { notifyArticleUpdated } from "../server.js";
 
 const currentFile = fileURLToPath(import.meta.url);
 const currentDir = path.dirname(currentFile);
@@ -45,6 +46,7 @@ export const createArticle = (req, res) => {
   const newArticle = { id, title, content, createdAt: new Date().toISOString() };
 
   fs.writeFileSync(filePath, JSON.stringify(newArticle, null, 2));
+  notifyArticleUpdated(newArticle);
   res.json(newArticle);
 };
 export const updateArticle = (req, res) => {
@@ -63,6 +65,7 @@ export const updateArticle = (req, res) => {
   try {
     const updatedArticle = { id, title, content, updatedAt: new Date().toISOString() };
     fs.writeFileSync(filePath, JSON.stringify(updatedArticle, null, 2));
+    notifyArticleUpdated(updatedArticle);
     res.json(updatedArticle);
   } catch (err) {
     console.error("Error updating article:", err);

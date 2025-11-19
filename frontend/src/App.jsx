@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useEffect, useRef } from "react";
+import { wsUrl } from "./api/articles";
 import Navbar from "./components/layout/Navbar";
 import HomePage from "./pages/HomePage";
 import ArticlePage from "./pages/ArticlePage";
@@ -9,6 +11,27 @@ import EditArticlePage from "./pages/EditArticlePage";
 import "./styles/App.css";
 
 function App() {
+  const wsRef = useRef(null);
+
+  useEffect(() => {
+    const ws = new WebSocket(wsUrl);
+    wsRef.current = ws;
+
+    ws.onmessage = (evt) => {
+      try {
+        const msg = JSON.parse(evt.data);
+        if (msg.type === "article_updated") {
+          toast.info(`Article updated: ${msg.title || msg.articleId}`);
+        } else if (msg.type === "attachment_added") {
+          toast.success(`New attachment added in article ${msg.articleId}: ${msg.fileName}`);
+        }
+      } catch {
+      }
+    };
+
+    return () => ws.close();
+  }, []);
+
   return (
     <Router>
       <Navbar />

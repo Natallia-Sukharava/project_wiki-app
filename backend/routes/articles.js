@@ -6,6 +6,7 @@ import {
   updateArticle,
   deleteArticle,
 } from "../controllers/articlesController.js";
+import attachmentsRouter from "./attachments.js";
 
 const router = express.Router();
 
@@ -14,5 +15,6 @@ router.get("/:id", getArticleById);
 router.post("/", createArticle);
 router.put("/:id", updateArticle);
 router.delete("/:id", deleteArticle);
+router.use("/:id/attachments", attachmentsRouter);
 
 export default router;
