@@ -89,4 +89,11 @@ router.get("/", (req, res) => {
   res.json(list);
 });
 
+router.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError || err.message.includes("Only")) {
+    return res.status(400).json({ error: err.message });
+  }
+  next(err);
+});
+
 export default router;

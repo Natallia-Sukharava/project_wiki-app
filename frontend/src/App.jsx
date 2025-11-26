@@ -11,26 +11,26 @@ import EditArticlePage from "./pages/EditArticlePage";
 import "./styles/App.css";
 
 function App() {
-  const wsRef = useRef(null);
+const wsRef = useRef(null);
 
-  useEffect(() => {
-    const ws = new WebSocket(wsUrl);
-    wsRef.current = ws;
+useEffect(() => {
+  const ws = new WebSocket(wsUrl);
+  wsRef.current = ws;
 
-    ws.onmessage = (evt) => {
-      try {
-        const msg = JSON.parse(evt.data);
-        if (msg.type === "article_updated") {
-          toast.info(`Article updated: ${msg.title || msg.articleId}`);
-        } else if (msg.type === "attachment_added") {
-          toast.success(`New attachment added in article ${msg.articleId}: ${msg.fileName}`);
-        }
-      } catch {
-      }
-    };
+  ws.onmessage = (evt) => {
+    const msg = JSON.parse(evt.data);
 
-    return () => ws.close();
-  }, []);
+    if (msg.type === "article_created") {
+      toast.success(`New article created: ${msg.title}`);
+    } else if (msg.type === "article_updated") {
+      toast.info(`Article updated: ${msg.title}`);
+    } else if (msg.type === "attachment_added") {
+      toast.success(`New attachment in article ${msg.articleId}: ${msg.fileName}`);
+    }
+  };
+
+  return () => ws.close();
+}, []);
 
   return (
     <Router>

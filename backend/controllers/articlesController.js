@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { notifyArticleUpdated } from "../server.js";
+import { notifyArticleCreated, notifyArticleUpdated } from "../server.js";
 
 const currentFile = fileURLToPath(import.meta.url);
 const currentDir = path.dirname(currentFile);
@@ -37,21 +37,32 @@ export const getArticleById = (req, res) => {
 
 export const createArticle = (req, res) => {
   const { title, content } = req.body;
+
   if (!title || !content) {
     return res.status(400).json({ error: "Title and content are required" });
   }
 
   const id = Date.now().toString();
   const filePath = path.join(dataDir, `${id}.json`);
-  const newArticle = { id, title, content, createdAt: new Date().toISOString() };
+
+  const newArticle = {
+    id,
+    title,
+    content,
+    createdAt: new Date().toISOString(),
+  };
 
   fs.writeFileSync(filePath, JSON.stringify(newArticle, null, 2));
-  notifyArticleUpdated(newArticle);
-  res.json(newArticle);
+
+  notifyArticleCreated(newArticle);
+
+  return res.json(newArticle);
 };
+
 export const updateArticle = (req, res) => {
   const { id } = req.params;
   const { title, content } = req.body;
+
   const filePath = path.join(dataDir, `${id}.json`);
 
   if (!fs.existsSync(filePath)) {
@@ -63,13 +74,21 @@ export const updateArticle = (req, res) => {
   }
 
   try {
-    const updatedArticle = { id, title, content, updatedAt: new Date().toISOString() };
+    const updatedArticle = {
+      id,
+      title,
+      content,
+      updatedAt: new Date().toISOString(),
+    };
+
     fs.writeFileSync(filePath, JSON.stringify(updatedArticle, null, 2));
+
     notifyArticleUpdated(updatedArticle);
-    res.json(updatedArticle);
+
+    return res.json(updatedArticle);
   } catch (err) {
     console.error("Error updating article:", err);
-    res.status(500).json({ error: "Failed to update article" });
+    return res.status(500).json({ error: "Failed to update article" });
   }
 };
 
@@ -83,9 +102,9 @@ export const deleteArticle = (req, res) => {
 
   try {
     fs.unlinkSync(filePath);
-    res.json({ message: "Article deleted successfully" });
+    return res.json({ message: "Article deleted successfully" });
   } catch (err) {
     console.error("Error deleting article:", err);
-    res.status(500).json({ error: "Failed to delete article" });
+    return res.status(500).json({ error: "Failed to delete article" });
   }
 };

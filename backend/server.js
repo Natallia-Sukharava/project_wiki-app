@@ -21,10 +21,14 @@ function broadcast(event) {
   }
 }
 
-export function notifyArticleUpdated(article) {
-  broadcast({ type: "article_updated", articleId: article.id, title: article.title, at: Date.now() });
+export function notifyArticleCreated(article) {
+  broadcast({ type: "article_created", articleId: article.id, title: article.title, at: Date.now()
+  });
 }
 
+export function notifyArticleUpdated(article) {
+  broadcast({ type: "article_updated", articleId: article.id, title: article.title, at: Date.now()});
+}
 export function notifyAttachmentAdded(articleId, file) {
   broadcast({ type: "attachment_added", articleId, fileName: file.originalname || file.filename, at: Date.now() });
 }
