@@ -8,6 +8,8 @@ import { WebSocketServer } from "ws";
 
 import articlesRouter from "./routes/articles.js";
 
+import db from "./models/index.js";
+
 const app = express();
 const server = http.createServer(app);
 const PORT = 4000;
@@ -46,6 +48,10 @@ app.use("/api/articles", articlesRouter);
 app.get("/", (req, res) => {
   res.send("Backend is running with WS and uploads!");
 });
+
+db.sequelize.authenticate()
+  .then(() => console.log('Database connected'))
+  .catch(err => console.error('DB error', err));
 
 server.listen(PORT, () => {
   console.log(`HTTP+WS server at http://localhost:${PORT}`);

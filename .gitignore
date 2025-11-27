@@ -44,3 +44,11 @@ backend/uploads/
 
 # Coverage / test output
 coverage/
+
+node_modules/
+.env
+npm-debug.log
+yarn-error.log
+dist/
+coverage/
+uploads/

@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": ".Vilnius2024",
+    "database": "wiki_app",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "postgres",
+    "password": ".Vilnius2024",
+    "database": "wiki_app_test",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "postgres",
+    "password": ".Vilnius2024",
+    "database": "wiki_app_prod",
+    "host": "localhost",
+    "dialect": "postgres"
+  }
+}
