@@ -5,6 +5,7 @@ import http from "http";
 import path from "path";
 import fs from "fs";
 import { WebSocketServer } from "ws";
+import workspacesRouter from "./routes/workspaces.js";
 
 import articlesRouter from "./routes/articles.js";
 
@@ -37,6 +38,7 @@ export function notifyAttachmentAdded(articleId, file) {
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use("/api/workspaces", workspacesRouter);
 
 const uploadsDir = path.join(process.cwd(), "uploads");
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });

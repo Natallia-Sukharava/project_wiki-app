@@ -1,11 +1,22 @@
 ## Wiki App Project
 
-This project is a simple full-stack Node.js + React application for managing articles.
+This project is a simple full-stack Node.js + React application for managing articles with support for PostgreSQL, Sequelize migrations, file uploads and workspaces.
 
 The project consists of two main parts:
 
-Backend (Node.js, Express) — provides REST API for managing articles.
+Backend (Node.js, Express) — provides REST API for managing articles. The backend uses environment variables from .env for DB configuration.
 Frontend (React + Vite) — provides a simple user interface to create, view, and list articles.
+
+# Environment variables
+
+backend/.env:
+DB_HOST=localhost
+DB_NAME=wiki_app
+DB_USER=postgres
+DB_PASSWORD=your_password_here
+DB_DIALECT=postgres
+
+config/config.json is required only for sequelize-cli
 
 ## Project structure
 
@@ -13,12 +24,12 @@ project_wiki-app/
 │
 ├── backend/
 │   ├── controllers/
-│   │   └── articlesController.js
+│   ├── models/
 │   ├── routes/
-│   │   └── articles.js
-│   │── models/
-│   │   └── articleModel.js
-│   ├── data/             
+│   ├── migrations/
+│   │── uploads/
+│   ├── .env      
+│   ├── .env.example       
 │   └── server.js        
 │
 ├── frontend/
@@ -40,11 +51,27 @@ project_wiki-app/
 
 ### Backend
 
-GET /api/articles — returns a list of all articles.
-GET /api/articles/:id — returns a single article by its identifier.
-POST /api/articles — creates a new article and saves it as a JSON file.
-Basic validation for required fields (title, content).
-Data is stored in backend/data as individual .json files.
+The backend is built with Express + PostgreSQL + Sequelize ORM.
+
+### REST API
+GET    /api/articles        list articles
+GET    /api/articles/:id    get a single article
+POST   /api/articles        create an article
+PUT    /api/articles/:id    update an article
+DELETE /api/articles/:id    delete an article
+
+### Workspaces API
+GET    /api/workspaces              list all workspaces
+POST   /api/workspaces              create workspace
+GET    /api/workspaces/:id          get workspace by id
+GET    /api/workspaces/:id/articles list articles inside a workspace
+
+### Data storage
+
+All data is stored in a PostgreSQL database using Sequelize models and migrations.
+Tables created by migrations:
+Articles
+Workspaces
 
 ### Frontend
 
@@ -56,21 +83,22 @@ Includes a development proxy (vite.config.js) to connect frontend and backend se
 
 ## Installation
 
-### 1. Clone the repository
+### Clone the repository
 
 git clone https://github.com/Natallia-Sukharava/project_wiki-app
 cd project_wiki-app
 
-### 2. Backend setup
+### Backend setup
 
 cd backend
 npm install
+copy .env.example → .env and fill database credentials.
 node server.js
 
 The server will start at:
 http://localhost:4000
 
-### 3. Frontend setup
+### Frontend setup
 
 In a new terminal:
 
@@ -78,11 +106,21 @@ cd frontend
 npm install
 npm run dev
 
+### Database setup
+
+Create PostgreSQL database manually (via psql or PGAdmin):
+Database name: wiki_app
+
+### Run database migrations
+
+npm run db:migrate
+npm run db:migrate:reset
+These run Sequelize migrations and create required tables (Articles, Workspaces).
 
 The app will run at:
 http://localhost:5173
 
 ## Technologies used
 
-Backend: Node.js, Express, CORS, Body-parser, File System (fs)
+Backend: Node.js, Express, Sequelize ORM, PostgreSQL, multer, WebSockets
 Frontend: React, React Router, React Quill, Vite

@@ -3,7 +3,10 @@ import { Model } from "sequelize";
 export default (sequelize, DataTypes) => {
   class Article extends Model {
     static associate(models) {
-      
+      Article.belongsTo(models.Workspace, {
+        foreignKey: "workspaceId",
+        onDelete: "CASCADE",
+      });
     }
   }
 

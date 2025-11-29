@@ -6,6 +6,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+    "db:migrate": "npx sequelize-cli db:migrate",
+    "db:migrate:undo": "npx sequelize-cli db:migrate:undo:all",
+    "db:migrate:reset": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,6 +17,7 @@
   "dependencies": {
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "multer": "^2.0.2",
     "pg": "^8.16.3",

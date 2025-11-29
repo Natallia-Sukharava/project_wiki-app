@@ -1,6 +1,5 @@
 'use strict';
 
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Articles', {
@@ -20,7 +19,12 @@ module.exports = {
       },
       workspaceId: {
         type: Sequelize.INTEGER,
-        allowNull: true, 
+        allowNull: true,
+        references: {
+          model: "Workspaces",
+          key: "id"
+        },
+        onDelete: "CASCADE"
       },
       createdAt: {
         allowNull: false,

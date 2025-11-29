@@ -1,47 +1,45 @@
 import { readdirSync } from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
+import url from "url";
 import Sequelize from "sequelize";
-import configFile from "../config/config.json" assert { type: "json" };
+import dotenv from "dotenv";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+dotenv.config();
 
-const env = "development";
-const config = configFile[env];
+const rootFile = url.fileURLToPath(import.meta.url);
+const modelsDir = path.dirname(rootFile);
+
+const dbName = process.env.DB_NAME || "wiki_app";
+const dbUser = process.env.DB_USER || "postgres";
+const dbPassword = process.env.DB_PASSWORD || "";
+const dbHost = process.env.DB_HOST || "localhost";
+const dbDialect = process.env.DB_DIALECT || "postgres";
 
 const db = {};
 
-const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  config
+const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
+  host: dbHost,
+  dialect: dbDialect,
+});
+
+const modelFiles = readdirSync(modelsDir).filter(
+  (file) => file !== "index.js" && file.endsWith(".js")
 );
 
-const files = readdirSync(__dirname)
-  .filter(
-    (file) =>
-      file.indexOf(".") !== 0 &&
-      file !== "index.js" &&
-      file.slice(-3) === ".js"
-  );
+for (const file of modelFiles) {
+  const modelPath = path.join(modelsDir, file);
+  const moduleImport = await import(modelPath);
+  const model = moduleImport.default;
 
-
-for (const file of files) {
-  const modelPath = path.join(__dirname, file);
-  const model = (await import(modelPath)).default;
   const modelInstance = model(sequelize, Sequelize.DataTypes);
   db[modelInstance.name] = modelInstance;
 }
 
-
-Object.keys(db).forEach((modelName) => {
-  if (db[modelName].associate) {
-    db[modelName].associate(db);
+Object.values(db).forEach((model) => {
+  if (model.associate) {
+    model.associate(db);
   }
 });
-
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
