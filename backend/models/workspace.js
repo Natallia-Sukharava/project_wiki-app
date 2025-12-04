@@ -1,17 +1,25 @@
 export default (sequelize, DataTypes) => {
-    const Workspace = sequelize.define("Workspace", {
+  const Workspace = sequelize.define(
+    "Workspace",
+    {
       name: {
         type: DataTypes.STRING,
-        allowNull: false
-      }
+        allowNull: false,
+      },
+    },
+    {
+      tableName: "Workspaces",
+      timestamps: true,
+    }
+  );
+
+  Workspace.associate = (models) => {
+    Workspace.hasMany(models.Article, {
+      foreignKey: "workspaceId",
+      as: "articles",
+      onDelete: "CASCADE",
     });
-  
-    Workspace.associate = (models) => {
-      Workspace.hasMany(models.Article, {
-        foreignKey: "workspaceId",
-        onDelete: "CASCADE",
-      });
-    };
-  
-    return Workspace;
-  };  
+  };
+
+  return Workspace;
+};

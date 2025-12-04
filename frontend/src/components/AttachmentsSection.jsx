@@ -52,7 +52,7 @@ export default function AttachmentsSection({ articleId }) {
       toast.success("Attachment deleted");
       await load();
     } catch (err) {
-      toast.error("Failed to delete");
+      toast.error("Failed to delete attachment");
     }
   };
 
@@ -79,12 +79,8 @@ export default function AttachmentsSection({ articleId }) {
         <ul style={{ marginTop: 8 }}>
           {items.map((a) => (
             <li key={a.storedAs}>
-              <a
-                href={`http://localhost:4000${a.url}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {a.storedAs}
+              <a href={a.url} target="_blank" rel="noreferrer">
+                {a.originalName || a.storedAs}
               </a>
 
               <button

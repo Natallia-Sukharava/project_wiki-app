@@ -1,55 +1,55 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getArticleById, updateArticle } from "../api/articles";
+import { getArticleById, getWorkspaces, updateArticle } from "../api/articles";
 import { toast } from "react-toastify";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import ArticleForm from "../components/articles/ArticleForm";
 
 function EditArticlePage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+
+  const [article, setArticle] = useState(null);
+  const [workspaces, setWorkspaces] = useState([]);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    const fetchArticle = async () => {
-      const article = await getArticleById(id);
-      if (article) {
-        setTitle(article.title);
-        setContent(article.content);
-      } else {
-        toast.error("Article not found");
+    (async () => {
+      try {
+        const articleData = await getArticleById(id);
+        const ws = await getWorkspaces();
+        setArticle(articleData);
+        setWorkspaces(ws);
+      } catch (err) {
+        toast.error("Failed to load article");
         navigate("/");
       }
-    };
-    fetchArticle();
-  }, [id, navigate]);
+    })();
+  }, [id]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (data) => {
+    setSubmitting(true);
     try {
-      await updateArticle(id, { title, content });
-      toast.success("Article updated successfully!");
+      await updateArticle(id, data);
+      toast.success("Article updated");
       navigate(`/article/${id}`);
-    } catch (error) {
-      toast.error(error.message || "Failed to update article");
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setSubmitting(false);
     }
   };
 
+  if (!article || !workspaces.length) return <p>Loading...</p>;
+
   return (
-    <div className="edit-article-container">
+    <div className="page">
       <h2>Edit Article</h2>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Enter title"
-          required
-        />
-        <ReactQuill value={content} onChange={setContent} />
-        <button type="submit">Save Changes</button>
-      </form>
+      <ArticleForm
+        initialData={article}
+        workspaces={workspaces}
+        onSubmit={handleSubmit}
+        submitting={submitting}
+      />
     </div>
   );
 }

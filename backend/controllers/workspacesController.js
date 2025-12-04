@@ -29,7 +29,12 @@ export const getAllWorkspaces = async (req, res) => {
 export const getWorkspaceById = async (req, res) => {
   try {
     const workspace = await db.Workspace.findByPk(req.params.id, {
-      include: db.Article,
+      include: [
+        {
+          model: db.Article,
+          as: "articles",
+        }
+      ],
     });
 
     if (!workspace) {
@@ -43,7 +48,7 @@ export const getWorkspaceById = async (req, res) => {
   }
 };
 
-// Get ONLY articles of a workspace (your version)
+// Get ONLY articles of a workspace 
 export const getWorkspaceArticles = async (req, res) => {
   try {
     const workspaceId = req.params.id;

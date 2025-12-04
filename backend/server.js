@@ -1,19 +1,17 @@
 import express from "express";
 import cors from "cors";
-import bodyParser from "body-parser";
 import http from "http";
 import path from "path";
 import fs from "fs";
 import { WebSocketServer } from "ws";
 import workspacesRouter from "./routes/workspaces.js";
-
+import commentsRoutes from './routes/comments.js';
 import articlesRouter from "./routes/articles.js";
-
 import db from "./models/index.js";
 
 const app = express();
 const server = http.createServer(app);
-const PORT = 4000;
+const PORT = process.env.PORT || 4000;
 
 export const wss = new WebSocketServer({ server, path: "/ws" });
 
@@ -32,12 +30,13 @@ export function notifyArticleCreated(article) {
 export function notifyArticleUpdated(article) {
   broadcast({ type: "article_updated", articleId: article.id, title: article.title, at: Date.now()});
 }
+
 export function notifyAttachmentAdded(articleId, file) {
   broadcast({ type: "attachment_added", articleId, fileName: file.originalname || file.filename, at: Date.now() });
 }
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 app.use("/api/workspaces", workspacesRouter);
 
 const uploadsDir = path.join(process.cwd(), "uploads");
@@ -47,6 +46,9 @@ app.use("/uploads", express.static(uploadsDir));
 
 app.use("/api/articles", articlesRouter);
 
+app.use('/api', commentsRoutes);
+
+//http://localhost:4000/ в браузере
 app.get("/", (req, res) => {
   res.send("Backend is running with WS and uploads!");
 });

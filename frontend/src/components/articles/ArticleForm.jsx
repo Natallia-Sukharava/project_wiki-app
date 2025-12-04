@@ -1,51 +1,33 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import "../../styles/ArticleForm.css";
 
-function ArticleForm() {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const navigate = useNavigate();
+function ArticleForm({ initialData, workspaces, onSubmit, submitting }) {
+  const [title, setTitle] = useState(initialData?.title || "");
+  const [content, setContent] = useState(initialData?.content || "");
 
-  const handleSubmit = async (e) => {
+  const [workspaceId, setWorkspaceId] = useState(
+    initialData?.workspaceId || workspaces?.[0]?.id || ""
+  );
+
+  useEffect(() => {
+    if (initialData) {
+      setTitle(initialData.title);
+      setContent(initialData.content);
+      setWorkspaceId(initialData.workspaceId);
+    }
+  }, [initialData]);
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (!title.trim() || !content.trim()) {
-      toast.warn("Please enter both title and content before submitting.");
-      return;
-    }
-
-    try {
-      const response = await fetch("http://localhost:4000/api/articles", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || "Failed to create article");
-      }
-
-      await response.json();
-      toast.success("Article created successfully!");
-      setTitle("");
-      setContent("");
-
-      setTimeout(() => navigate("/"), 3000);
-    } catch (error) {
-      console.error("Error saving article:", error);
-      toast.error(error.message || "Failed to connect to server.");
-    }
+    onSubmit({ title, content, workspaceId });
   };
 
   return (
     <div className="article-form-container">
       <form className="article-form" onSubmit={handleSubmit}>
+        {/* Title */}
         <input
           type="text"
           placeholder="Enter title"
@@ -53,14 +35,31 @@ function ArticleForm() {
           onChange={(e) => setTitle(e.target.value)}
           required
         />
+
+        {/* Workspace selector */}
+        <select
+          value={workspaceId}
+          onChange={(e) => setWorkspaceId(Number(e.target.value))}
+          required
+        >
+          {workspaces.map((ws) => (
+            <option key={ws.id} value={ws.id}>
+              {ws.name}
+            </option>
+          ))}
+        </select>
+
+        {/* Content */}
         <ReactQuill
           value={content}
           onChange={setContent}
           placeholder="Write your article content here..."
         />
-        <button type="submit">Save</button>
+
+        <button type="submit" disabled={submitting}>
+          {submitting ? "Saving..." : "Save"}
+        </button>
       </form>
-      <ToastContainer position="top-center" autoClose={5000} />
     </div>
   );
 }

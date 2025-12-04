@@ -24,3 +24,13 @@
   .article-form button:hover {
     background: #005fa3;
   }  
+
+  .ql-container {
+    min-height: 200px;
+    border-radius: 6px;
+  }
+  
+  .ql-editor {
+    min-height: 200px;
+  }
+  

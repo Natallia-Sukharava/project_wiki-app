@@ -7,7 +7,7 @@ const Article = db.Article;
 export const getAllArticles = async (req, res) => {
   try {
     const articles = await Article.findAll({
-      attributes: ["id", "title"]
+      attributes: ["id", "title", "workspaceId"]
     });
 
     res.json(articles);
@@ -20,20 +20,33 @@ export const getAllArticles = async (req, res) => {
 // GET /api/articles/:id
 export const getArticleById = async (req, res) => {
   try {
-    const article = await Article.findByPk(req.params.id);
+    const article = await db.Article.findByPk(req.params.id, {
+      include: [
+        {
+          model: db.Comment,
+          as: "comments"
+        }
+      ]
+    });
 
-    if (!article) return res.status(404).json({ error: "Not found" });
+    if (!article) {
+      return res.status(404).json({ error: "Article not found" });
+    }
 
     res.json(article);
   } catch (err) {
-    console.error("DB error:", err);
+    console.error(err);
     res.status(500).json({ error: "Failed to fetch article" });
   }
 };
 
 // POST /api/articles
 export const createArticle = async (req, res) => {
-  const { title, content, workspaceId = 1 } = req.body;
+  const { title, content, workspaceId } = req.body;
+
+  if (!workspaceId) {
+    return res.status(400).json({ error: "workspaceId is required" });
+  }
 
   try {
     const article = await Article.create({ title, content, workspaceId });

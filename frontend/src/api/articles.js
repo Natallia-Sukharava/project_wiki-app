@@ -1,6 +1,29 @@
 const API_URL = "http://localhost:4000/api/articles";
 export const wsUrl = "ws://localhost:4000/ws";
 
+export const getWorkspaces = async () => {
+  try {
+    const res = await fetch("http://localhost:4000/api/workspaces");
+    if (!res.ok) throw new Error("Failed to fetch workspaces");
+    return await res.json();
+  } catch (error) {
+    console.error("Error loading workspaces:", error);
+    return [];
+  }
+};
+
+export const getWorkspaceArticles = async (workspaceId) => {
+  try {
+    const res = await fetch(`http://localhost:4000/api/workspaces/${workspaceId}/articles`);
+    if (!res.ok) throw new Error("Failed to fetch articles of workspace");
+    return await res.json();
+  } catch (error) {
+    console.error("Error loading workspace articles:", error);
+    return [];
+  }
+};
+
+
 export const getArticles = async () => {
   try {
     const response = await fetch(API_URL);
@@ -120,5 +143,37 @@ export const uploadAttachment = async (id, file) => {
   } catch (err) {
     console.error("Error uploading attachment:", err);
     throw err; 
+  }
+};
+
+export const createComment = async (articleId, content) => {
+  try {
+    const res = await fetch(`http://localhost:4000/api/articles/${articleId}/comments`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ content }),
+    });
+
+    if (!res.ok) throw new Error("Failed to add comment");
+
+    return await res.json();
+  } catch (error) {
+    console.error("Error creating comment:", error);
+    throw error;
+  }
+};
+
+export const deleteComment = async (id) => {
+  try {
+    const res = await fetch(`http://localhost:4000/api/comments/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) throw new Error("Failed to delete comment");
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting comment:", error);
+    throw error;
   }
 };

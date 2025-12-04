@@ -42,13 +42,9 @@ Thumbs.db
 backend/data/*.json
 backend/uploads/
 
+uploads/
+uploads/*
+!uploads/.gitkeep
+
 # Coverage / test output
 coverage/
-
-node_modules/
-.env
-npm-debug.log
-yarn-error.log
-dist/
-coverage/
-uploads/

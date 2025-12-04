@@ -1,13 +1,76 @@
 .article-view {
-    max-width: 800px;
-    margin: 40px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,.1);
-  }
-  .article-view h2 { margin: 0 0 10px; color:#333; }
-  .article-content { margin: 10px 0 20px; line-height: 1.6; color:#555; }
+  padding: 10px 0;
+}
+
+.article-view h2 {
+  margin: 0 0 8px;
+  color: #333;
+}
+
+.article-meta {
+  font-size: 0.9rem;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.article-content {
+  line-height: 1.6;
+  color: #555;
+}
+
   .article-date { color:#777; font-size: .9rem; }
   .back-link { color:#007acc; text-decoration:none; }
   .back-link:hover { text-decoration:underline; }  
+
+  .comments-section {
+    margin-top: 30px;
+  }
+  
+  .comments-section h3 {
+    margin-bottom: 12px;
+    color: #333;
+  }
+  
+  .comments-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 15px;
+  }
+  
+  .comment-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .comment-item span {
+    color: #444;
+    font-size: 0.95rem;
+  }
+  
+  .comment-form textarea {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    resize: vertical;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+  }
+  
+  .comment-form button {
+    padding: 8px 14px;
+    border: none;
+    background: #007acc;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+  }
+  
+  .comment-form button:hover {
+    background: #005fa3;
+  }
+  

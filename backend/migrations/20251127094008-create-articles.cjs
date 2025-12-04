@@ -19,7 +19,7 @@ module.exports = {
       },
       workspaceId: {
         type: Sequelize.INTEGER,
-        allowNull: true,
+        allowNull: false,
         references: {
           model: "Workspaces",
           key: "id"

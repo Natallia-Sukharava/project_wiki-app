@@ -5,6 +5,13 @@ export default (sequelize, DataTypes) => {
     static associate(models) {
       Article.belongsTo(models.Workspace, {
         foreignKey: "workspaceId",
+        as: "workspace",
+        onDelete: "CASCADE",
+      });
+
+      Article.hasMany(models.Comment, {
+        foreignKey: "articleId",
+        as: "comments",
         onDelete: "CASCADE",
       });
     }
@@ -12,17 +19,11 @@ export default (sequelize, DataTypes) => {
 
   Article.init(
     {
-      title: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      content: {
-        type: DataTypes.TEXT,
-        allowNull: false,
-      },
+      title: DataTypes.STRING,
+      content: DataTypes.TEXT,
       workspaceId: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
       },
     },
     {

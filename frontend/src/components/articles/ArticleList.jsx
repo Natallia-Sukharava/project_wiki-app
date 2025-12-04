@@ -13,7 +13,7 @@ function ArticleList({ articles, refreshArticles }) {
       await deleteArticle(id);
       toast.success("Article deleted successfully!");
       setModalId(null);
-      await refreshArticles();
+      await refreshArticles(); 
     } catch (error) {
       console.error("Error deleting article:", error);
       toast.error(error.message || "Failed to delete article.");
@@ -33,11 +33,19 @@ function ArticleList({ articles, refreshArticles }) {
               <Link to={`/article/${article.id}`} className="article-title">
                 {article.title}
               </Link>
+
+              {article.workspaceId && (
+                <span className="article-workspace">
+                  Workspace #{article.workspaceId}
+                </span>
+              )}
             </div>
+
             <div className="article-actions">
               <Link to={`/edit/${article.id}`} className="edit-btn">
                 Edit
               </Link>
+
               <button
                 onClick={() => setModalId(article.id)}
                 className="delete-btn"
@@ -60,6 +68,7 @@ function ArticleList({ articles, refreshArticles }) {
               >
                 Yes
               </button>
+
               <button
                 className="confirm-btn no"
                 onClick={() => setModalId(null)}

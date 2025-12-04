@@ -41,3 +41,15 @@ body {
     color: #777;
   }
   
+  .workspace-filter {
+    margin-bottom: 20px;
+    padding: 10px 0;
+  }
+  
+  .workspace-filter select {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+  }
+  
