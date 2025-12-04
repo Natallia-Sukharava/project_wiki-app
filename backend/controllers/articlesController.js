@@ -7,7 +7,14 @@ const Article = db.Article;
 export const getAllArticles = async (req, res) => {
   try {
     const articles = await Article.findAll({
-      attributes: ["id", "title", "workspaceId"]
+      attributes: ["id", "title", "workspaceId"],
+      include: [
+        {
+          model: db.Workspace,
+          as: "workspace",
+          attributes: ["name"]
+        }
+      ]
     });
 
     res.json(articles);
@@ -23,10 +30,15 @@ export const getArticleById = async (req, res) => {
     const article = await db.Article.findByPk(req.params.id, {
       include: [
         {
+          model: db.Workspace,
+          as: "workspace",
+          attributes: ["name"]
+        },
+        {
           model: db.Comment,
           as: "comments"
         }
-      ]
+      ]      
     });
 
     if (!article) {

@@ -36,7 +36,7 @@ function ArticleList({ articles, refreshArticles }) {
 
               {article.workspaceId && (
                 <span className="article-workspace">
-                  Workspace #{article.workspaceId}
+                  {article.workspace?.name}
                 </span>
               )}
             </div>

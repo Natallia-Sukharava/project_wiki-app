@@ -146,6 +146,7 @@ export const uploadAttachment = async (id, file) => {
   }
 };
 
+
 export const createComment = async (articleId, content) => {
   try {
     const res = await fetch(`http://localhost:4000/api/articles/${articleId}/comments`, {
@@ -177,3 +178,17 @@ export const deleteComment = async (id) => {
     throw error;
   }
 };
+
+export async function createWorkspace(data) {
+  const res = await fetch("http://localhost:4000/api/workspaces", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to create workspace");
+  }
+
+  return res.json();
+}
