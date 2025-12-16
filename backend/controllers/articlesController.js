@@ -2,6 +2,7 @@ import db from "../models/index.js";
 import { notifyArticleCreated, notifyArticleUpdated } from "../server.js";
 
 const Article = db.Article;
+const ArticleVersion = db.ArticleVersion;
 
 // GET /api/articles
 export const getAllArticles = async (req, res) => {
@@ -12,9 +13,9 @@ export const getAllArticles = async (req, res) => {
         {
           model: db.Workspace,
           as: "workspace",
-          attributes: ["name"]
-        }
-      ]
+          attributes: ["name"],
+        },
+      ],
     });
 
     res.json(articles);
@@ -27,18 +28,18 @@ export const getAllArticles = async (req, res) => {
 // GET /api/articles/:id
 export const getArticleById = async (req, res) => {
   try {
-    const article = await db.Article.findByPk(req.params.id, {
+    const article = await Article.findByPk(req.params.id, {
       include: [
         {
           model: db.Workspace,
           as: "workspace",
-          attributes: ["name"]
+          attributes: ["name"],
         },
         {
           model: db.Comment,
-          as: "comments"
-        }
-      ]      
+          as: "comments",
+        },
+      ],
     });
 
     if (!article) {
@@ -72,18 +73,39 @@ export const createArticle = async (req, res) => {
   }
 };
 
-// PUT /api/articles/:id
+// PUT /api/articles/:id VERSIONING
 export const updateArticle = async (req, res) => {
   const { title, content } = req.body;
 
   try {
     const article = await Article.findByPk(req.params.id);
 
-    if (!article) return res.status(404).json({ error: "Not found" });
+    if (!article) {
+      return res.status(404).json({ error: "Not found" });
+    }
 
+    // последняя версия
+    const lastVersion = await ArticleVersion.findOne({
+      where: { articleId: article.id },
+      order: [["versionNumber", "DESC"]],
+    });
+
+    const nextVersionNumber = lastVersion
+      ? lastVersion.versionNumber + 1
+      : 1;
+
+    // сохраняем текущую статью как версию
+    await ArticleVersion.create({
+      articleId: article.id,
+      title: article.title,
+      content: article.content,
+      workspaceId: article.workspaceId,
+      versionNumber: nextVersionNumber,
+    });
+
+    // обновляем текущую статью
     article.title = title;
     article.content = content;
-
     await article.save();
 
     notifyArticleUpdated(article);
@@ -100,7 +122,9 @@ export const deleteArticle = async (req, res) => {
   try {
     const article = await Article.findByPk(req.params.id);
 
-    if (!article) return res.status(404).json({ error: "Not found" });
+    if (!article) {
+      return res.status(404).json({ error: "Not found" });
+    }
 
     await article.destroy();
 

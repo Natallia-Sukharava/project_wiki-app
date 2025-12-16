@@ -14,6 +14,12 @@ export default (sequelize, DataTypes) => {
         as: "comments",
         onDelete: "CASCADE",
       });
+
+      Article.hasMany(models.ArticleVersion, {
+        foreignKey: "articleId",
+        as: "versions",
+        onDelete: "CASCADE",
+      });
     }
   }
 

@@ -16,7 +16,8 @@ DB_USER=postgres
 DB_PASSWORD=your_password_here
 DB_DIALECT=postgres
 
-config/config.json is required only for sequelize-cli
+config/config.json is required only for sequelize-cli (migrations).
+The application runtime uses environment variables from backend/.env.
 
 ## Project structure
 
@@ -57,7 +58,9 @@ The backend is built with Express + PostgreSQL + Sequelize ORM.
 GET    /api/articles        list articles
 GET    /api/articles/:id    get a single article
 POST   /api/articles        create an article
-PUT    /api/articles/:id    update an article
+PUT    /api/articles/:id    update an article (creates a new version)
+GET    /api/articles/:id/versions      list article versions
+GET    /api/article-versions/:versionId get a specific article version (read-only)
 DELETE /api/articles/:id    delete an article
 
 ### Workspaces API
@@ -66,11 +69,18 @@ POST   /api/workspaces              create workspace
 GET    /api/workspaces/:id          get workspace by id
 GET    /api/workspaces/:id/articles list articles inside a workspace
 
+### Article versioning
+
+Articles support version control.
+Each time an article is updated, the previous state is saved as a new immutable version.
+Old versions are accessible in read-only mode via a dedicated API endpoint.
+
 ### Data storage
 
 All data is stored in a PostgreSQL database using Sequelize models and migrations.
 Tables created by migrations:
 Articles
+ArticleVersions
 Workspaces
 
 ### Frontend

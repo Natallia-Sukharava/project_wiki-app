@@ -7,7 +7,9 @@ import { WebSocketServer } from "ws";
 import workspacesRouter from "./routes/workspaces.js";
 import commentsRoutes from './routes/comments.js';
 import articlesRouter from "./routes/articles.js";
+import articleVersionsRoutes from "./routes/articleVersions.js";
 import db from "./models/index.js";
+import { fileURLToPath } from "url";
 
 const app = express();
 const server = http.createServer(app);
@@ -39,7 +41,10 @@ app.use(cors());
 app.use(express.json());
 app.use("/api/workspaces", workspacesRouter);
 
-const uploadsDir = path.join(process.cwd(), "uploads");
+const currentFilePath = fileURLToPath(import.meta.url);
+const currentDirPath = path.dirname(currentFilePath);
+
+const uploadsDir = path.join(currentDirPath, "uploads");
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
 app.use("/uploads", express.static(uploadsDir));
@@ -47,6 +52,8 @@ app.use("/uploads", express.static(uploadsDir));
 app.use("/api/articles", articlesRouter);
 
 app.use('/api', commentsRoutes);
+
+app.use("/api", articleVersionsRoutes);
 
 //http://localhost:4000/ в браузере
 app.get("/", (req, res) => {
