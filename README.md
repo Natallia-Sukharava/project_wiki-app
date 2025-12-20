@@ -59,8 +59,8 @@ GET    /api/articles        list articles
 GET    /api/articles/:id    get a single article
 POST   /api/articles        create an article
 PUT    /api/articles/:id    update an article (creates a new version)
-GET    /api/articles/:id/versions      list article versions
-GET    /api/article-versions/:versionId get a specific article version (read-only)
+GET    /api/article/:id/with-current   list article versions with current flag
+GET    /api/version/:versionId         get a specific article version (read-only)
 DELETE /api/articles/:id    delete an article
 
 ### Workspaces API
@@ -74,6 +74,15 @@ GET    /api/workspaces/:id/articles list articles inside a workspace
 Articles support version control.
 Each time an article is updated, the previous state is saved as a new immutable version.
 Old versions are accessible in read-only mode via a dedicated API endpoint.
+
+### UI behavior for article versions
+
+When viewing an old version of an article:
+A read-only banner is displayed in the UI
+Editing is disabled
+Attachments and comments are hidden, as they are not versioned entities
+Users can return to the latest version via a dedicated button
+
 
 ### Data storage
 
@@ -90,6 +99,7 @@ Allows creating a new article using a WYSIWYG editor (ReactQuill).
 Allows viewing a full article by clicking its title.
 Automatically updates the article list after creating a new one.
 Includes a development proxy (vite.config.js) to connect frontend and backend seamlessly.
+The frontend also supports viewing historical article versions in read-only mode via the Versions UI.
 
 ## Installation
 
