@@ -8,7 +8,9 @@ function ArticleView({ article }) {
       <h2>{article.title}</h2>
 
       {article.workspaceId && (
-        <p className="article-meta">Workspace #{article.workspaceId}</p>
+        <p className="article-meta">
+          Workspace #{article.workspaceId}
+        </p>
       )}
 
       <div

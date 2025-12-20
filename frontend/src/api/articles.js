@@ -192,3 +192,16 @@ export async function createWorkspace(data) {
 
   return res.json();
 }
+
+export async function getArticleVersionsWithCurrent(articleId) {
+  const res = await fetch(`/api/article/${articleId}/with-current`);
+  if (!res.ok) throw new Error("Failed to load versions");
+  return res.json();
+}
+
+export async function getArticleVersionById(versionId) {
+  const res = await fetch(`/api/version/${versionId}`);
+  if (!res.ok) throw new Error("Failed to load version");
+  return res.json();
+}
+
