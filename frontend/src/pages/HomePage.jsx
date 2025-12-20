@@ -44,12 +44,13 @@ function HomePage() {
 
   return (
     <div className="home-container">
-      <h2 className="page-title">Articles</h2>
-
-      <div className="workspace-filter">
-        <label>
-          Workspace:
+      <div className="articles-header">
+        <h2 className="articles-title">Articles</h2>
+  
+        <div className="workspace-filter">
+          <label htmlFor="workspace">Workspace</label>
           <select
+            id="workspace"
             value={selectedWorkspace}
             onChange={(e) => setSelectedWorkspace(e.target.value)}
           >
@@ -60,18 +61,21 @@ function HomePage() {
               </option>
             ))}
           </select>
-        </label>
+        </div>
       </div>
-
+  
       {loading ? (
-        <p>Loading articles...</p>
+        <p className="loading-text">Loading articles...</p>
       ) : articles.length > 0 ? (
-        <ArticleList articles={articles} refreshArticles={loadArticles} />
+        <ArticleList
+          articles={articles}
+          refreshArticles={loadArticles}
+        />
       ) : (
-        <p>No articles yet.</p>
+        <p className="empty-message">No articles yet.</p>
       )}
     </div>
   );
 }
-
+  
 export default HomePage;

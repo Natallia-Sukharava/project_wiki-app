@@ -26,15 +26,15 @@
     text-decoration: underline;
   }
   
+  .navbar-link:hover {
+    text-decoration: underline;
+  }
+  
 
   .navbar-link {
     color: #0077cc;
     cursor: pointer;
     margin-left: 20px;
     text-decoration: none;
-  }
-  
-  .navbar-link:hover {
-    text-decoration: underline;
   }
   
