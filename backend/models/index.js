@@ -28,7 +28,8 @@ const modelFiles = readdirSync(modelsDir).filter(
 
 for (const file of modelFiles) {
   const modelPath = path.join(modelsDir, file);
-  const moduleImport = await import(modelPath);
+  const modelUrl = url.pathToFileURL(modelPath).href;
+  const moduleImport = await import(modelUrl);
   const model = moduleImport.default;
 
   const modelInstance = model(sequelize, Sequelize.DataTypes);

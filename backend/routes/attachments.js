@@ -9,7 +9,7 @@ const router = express.Router({ mergeParams: true });
 
 const currentFile = fileURLToPath(import.meta.url);
 const currentDir = path.dirname(currentFile);
-const uploadsRoot = path.join(process.cwd(), "uploads");
+const uploadsRoot = path.join(currentDir, "..", "uploads");
 
 const ALLOWED = new Set(["image/jpeg", "image/png", "application/pdf"]);
 
@@ -45,7 +45,7 @@ router.post("/", upload.single("file"), (req, res) => {
 
   if (!file) return res.status(400).json({ error: "No file uploaded" });
 
-  const url = `/uploads/${id}/${file.filename}`;
+  const url = `${req.protocol}://${req.get("host")}/uploads/${id}/${file.filename}`;
 
   notifyAttachmentAdded(id, file);
 
@@ -81,10 +81,12 @@ router.get("/", (req, res) => {
 
   if (!fs.existsSync(dir)) return res.json([]);
 
-  const list = fs.readdirSync(dir).map((name) => ({
-    storedAs: name,
-    url: `/uploads/${id}/${name}`,
-  }));
+  const hostUrl = `${req.protocol}://${req.get("host")}`;
+
+const list = fs.readdirSync(dir).map((name) => ({
+  storedAs: name,
+  url: `${hostUrl}/uploads/${id}/${name}`,
+}));
 
   res.json(list);
 });

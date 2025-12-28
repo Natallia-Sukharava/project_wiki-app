@@ -63,9 +63,18 @@ export const createArticle = async (req, res) => {
 
   try {
     const article = await Article.create({ title, content, workspaceId });
-
+  
+    // создаём первую версию статьи
+    await ArticleVersion.create({
+      articleId: article.id,
+      title,
+      content,
+      workspaceId,
+      versionNumber: 1,
+    });
+  
     notifyArticleCreated(article);
-
+  
     res.json(article);
   } catch (err) {
     console.error("DB error:", err);
@@ -97,11 +106,11 @@ export const updateArticle = async (req, res) => {
     // сохраняем текущую статью как версию
     await ArticleVersion.create({
       articleId: article.id,
-      title: article.title,
-      content: article.content,
+      title,
+      content,
       workspaceId: article.workspaceId,
       versionNumber: nextVersionNumber,
-    });
+    });    
 
     // обновляем текущую статью
     article.title = title;
