@@ -7,8 +7,11 @@ import {
   deleteArticle,
 } from "../controllers/articlesController.js";
 import attachmentsRouter from "./attachments.js";
+import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
+
+router.use(authMiddleware);
 
 router.get("/", getAllArticles);
 router.get("/:id", getArticleById);

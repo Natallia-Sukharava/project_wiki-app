@@ -1,40 +1,48 @@
 .navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: #f9f9f9;
-    padding: 10px 20px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .navbar-logo {
-    font-size: 20px;
-    font-weight: 600;
-    color: #333;
-  }
-  
-  .navbar-links a,
-  .navbar-links .navbar-link {
-    font-size: 18px;    
-    color: #0077cc;
-    text-decoration: none;
-    margin-left: 20px;
-  }
-  
-  .navbar-links a:hover,
-  .navbar-links .navbar-link:hover {
-    text-decoration: underline;
-  }
-  
-  .navbar-link:hover {
-    text-decoration: underline;
-  }
-  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9f9f9;
+  padding: 12px 25px;
+  border-bottom: 1px solid #ddd;
+}
 
-  .navbar-link {
-    color: #0077cc;
-    cursor: pointer;
-    margin-left: 20px;
-    text-decoration: none;
-  }
-  
+.navbar-logo {
+  font-size: 22px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.navbar-links a,
+.navbar-link {
+  font-size: 16px;
+  color: #0077cc;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.navbar-links a:hover,
+.navbar-link:hover {
+  text-decoration: underline;
+}
+
+.user-info {
+  color: #444;
+  margin-left: 20px;
+}
+
+.logout-link {
+  margin-left: 10px;
+  color: #cc0000;
+}
+
+.logout-link:hover {
+  text-decoration: underline;
+}

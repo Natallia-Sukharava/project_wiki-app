@@ -8,14 +8,16 @@ import HomePage from "./pages/HomePage";
 import ArticlePage from "./pages/ArticlePage";
 import NewArticlePage from "./pages/NewArticlePage";
 import EditArticlePage from "./pages/EditArticlePage";
-import CreateWorkspaceModal from "./components/workspaces/CreateWorkspaceModal"; // ⭐ NEW
-import { createWorkspace } from "./api/articles"; // ⭐ NEW
+import CreateWorkspaceModal from "./components/workspaces/CreateWorkspaceModal"; 
+import { createWorkspace } from "./api/articles"; 
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 import "./styles/App.css";
-console.log("MY APP IS RUNNING, wsUrl =", wsUrl);
 
 function App() {
   const wsRef = useRef(null);
-  const [workspaceModal, setWorkspaceModal] = useState(false); // ⭐ NEW
+  const [workspaceModal, setWorkspaceModal] = useState(false);
 
   useEffect(() => {
     const ws = new WebSocket(wsUrl);
@@ -36,7 +38,6 @@ function App() {
     return () => ws.close();
   }, []);
 
-  // workspace
   const handleCreateWorkspace = async (name) => {
     try {
       await createWorkspace({ name });
@@ -50,27 +51,64 @@ function App() {
 
   return (
     <Router>
-      <Navbar onCreateWorkspace={() => setWorkspaceModal(true)} /> {/* ⭐ NEW */}
-
+  
+      <Navbar onCreateWorkspace={() => setWorkspaceModal(true)} />
+  
       <main className="main-container">
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/article/:id" element={<ArticlePage />} />
-          <Route path="/new" element={<NewArticlePage />} />
-          <Route path="/edit/:id" element={<EditArticlePage />} />
-        </Routes>
 
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+  
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <HomePage />
+              </ProtectedRoute>
+            }
+          />
+  
+          <Route
+            path="/article/:id"
+            element={
+              <ProtectedRoute>
+                <ArticlePage />
+              </ProtectedRoute>
+            }
+          />
+  
+          <Route
+            path="/new"
+            element={
+              <ProtectedRoute>
+                <NewArticlePage />
+              </ProtectedRoute>
+            }
+          />
+  
+          <Route
+            path="/edit/:id"
+            element={
+              <ProtectedRoute>
+                <EditArticlePage />
+              </ProtectedRoute>
+            }
+          />
+  
+        </Routes>
+  
         {workspaceModal && (
           <CreateWorkspaceModal
             onClose={() => setWorkspaceModal(false)}
             onSubmit={handleCreateWorkspace}
           />
         )}
-
+  
         <ToastContainer position="top-center" autoClose={5000} />
       </main>
     </Router>
-  );
+  );  
 }
 
 export default App;

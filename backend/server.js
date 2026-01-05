@@ -8,6 +8,8 @@ import workspacesRouter from "./routes/workspaces.js";
 import commentsRoutes from './routes/comments.js';
 import articlesRouter from "./routes/articles.js";
 import articleVersionsRoutes from "./routes/articleVersions.js";
+import { authMiddleware } from "./middleware/authMiddleware.js";
+import authRouter from "./routes/auth.js";
 import db from "./models/index.js";
 import { fileURLToPath } from "url";
 
@@ -49,13 +51,17 @@ if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
 app.use("/uploads", express.static(uploadsDir));
 
-app.use("/api/articles", articlesRouter);
+app.use("/api/articles", authMiddleware, articlesRouter);
+app.use("/api/comments", authMiddleware, commentsRoutes);
+app.use("/api/article-versions", authMiddleware, articleVersionsRoutes);
 
 app.use('/api', commentsRoutes);
 
 app.use("/api", articleVersionsRoutes);
 
-//http://localhost:4000/ в браузере
+app.use("/api/auth", authRouter);
+
+//http://localhost:4000/ 
 app.get("/", (req, res) => {
   res.send("Backend is running with WS and uploads!");
 });

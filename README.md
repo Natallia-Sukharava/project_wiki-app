@@ -7,7 +7,7 @@ The project consists of two main parts:
 Backend (Node.js, Express) — provides REST API for managing articles. The backend uses environment variables from .env for DB configuration.
 Frontend (React + Vite) — provides a simple user interface to create, view, and list articles.
 
-# Environment variables
+## Environment variables
 
 backend/.env:
 DB_HOST=localhost
@@ -15,9 +15,18 @@ DB_NAME=wiki_app
 DB_USER=postgres
 DB_PASSWORD=your_password_here
 DB_DIALECT=postgres
+DB_PORT=5432
+JWT_SECRET=your_secure_secret_here
 
 config/config.json is required only for sequelize-cli (migrations).
 The application runtime uses environment variables from backend/.env.
+
+## Authentication & Security
+### Backend Authentication
+
+JWT-based authentication is implemented.
+Users must register and login to obtain a JWT token.
+The token is required to access protected API routes.
 
 ## Project structure
 
@@ -101,6 +110,18 @@ Automatically updates the article list after creating a new one.
 Includes a development proxy (vite.config.js) to connect frontend and backend seamlessly.
 The frontend also supports viewing historical article versions in read-only mode via the Versions UI.
 
+## Frontend Authentication Flow
+
+User registers using Register Page
+User logs in using Login Page
+Received JWT + user info stored in localStorage
+Navbar dynamically changes:
+  Guest → Login, Register
+  Authenticated user → Home, New Article, New Workspace, Logout + email
+When JWT expires or becomes invalid:
+  user session is cleared
+  user is redirected to Login page
+
 ## Installation
 
 ### Clone the repository
@@ -142,5 +163,5 @@ http://localhost:5173
 
 ## Technologies used
 
-Backend: Node.js, Express, Sequelize ORM, PostgreSQL, multer, WebSockets
-Frontend: React, React Router, React Quill, Vite
+Backend: Node.js, Express, Sequelize ORM, PostgreSQL, multer, WebSockets, JWT Authentication(jsonwebtoken), Password hashing (bcrypt)
+Frontend: React, React Router, React Quill, Vite, JWT handling via LocalStorage, Protected Routes
