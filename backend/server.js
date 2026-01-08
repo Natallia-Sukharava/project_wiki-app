@@ -55,10 +55,6 @@ app.use("/api/articles", authMiddleware, articlesRouter);
 app.use("/api/comments", authMiddleware, commentsRoutes);
 app.use("/api/article-versions", authMiddleware, articleVersionsRoutes);
 
-app.use('/api', commentsRoutes);
-
-app.use("/api", articleVersionsRoutes);
-
 app.use("/api/auth", authRouter);
 
 //http://localhost:4000/ 

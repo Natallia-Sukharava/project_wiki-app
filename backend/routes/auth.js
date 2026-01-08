@@ -11,9 +11,19 @@ router.post("/register", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // simple validation
+    // simple validation: required fields
     if (!email || !password) {
       return res.status(400).json({ error: "Email and password are required" });
+    }
+
+     // simple validation: email format
+    if (!email.includes("@")) {
+      return res.status(400).json({ error: "Invalid email format" });
+    }
+    
+    // simple validation: password length
+    if (password.length < 6) {
+      return res.status(400).json({ error: "Password must be at least 6 characters" });
     }
 
     // check if user exists
@@ -43,7 +53,10 @@ router.post("/register", async (req, res) => {
   }
 });
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev_secret_key";
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error("JWT_SECRET is not set. Configure it in .env");
+}
 
 // POST /api/auth/login
 router.post("/login", async (req, res) => {
