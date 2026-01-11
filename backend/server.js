@@ -12,6 +12,7 @@ import { authMiddleware } from "./middleware/authMiddleware.js";
 import authRouter from "./routes/auth.js";
 import db from "./models/index.js";
 import { fileURLToPath } from "url";
+import usersRouter from "./routes/users.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -56,6 +57,8 @@ app.use("/api/comments", authMiddleware, commentsRoutes);
 app.use("/api/article-versions", authMiddleware, articleVersionsRoutes);
 
 app.use("/api/auth", authRouter);
+
+app.use("/api/users", usersRouter);
 
 //http://localhost:4000/ 
 app.get("/", (req, res) => {

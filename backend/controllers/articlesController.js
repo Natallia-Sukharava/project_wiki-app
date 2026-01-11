@@ -15,6 +15,11 @@ export const getAllArticles = async (req, res) => {
           as: "workspace",
           attributes: ["name"],
         },
+        {
+          model: db.User,
+          as: "author",
+          attributes: ["id", "email", "role"]
+        }        
       ],
     });
 
@@ -39,6 +44,11 @@ export const getArticleById = async (req, res) => {
           model: db.Comment,
           as: "comments",
         },
+        {
+          model: db.User,
+          as: "author",
+          attributes: ["id", "email", "role"]
+        }        
       ],
     });
 
@@ -62,7 +72,12 @@ export const createArticle = async (req, res) => {
   }
 
   try {
-    const article = await Article.create({ title, content, workspaceId });
+    const article = await Article.create({
+      title,
+      content,
+      workspaceId,
+      userId: req.user.id,
+    });    
   
     // создаём первую версию статьи
     await ArticleVersion.create({
@@ -87,7 +102,7 @@ export const updateArticle = async (req, res) => {
   const { title, content } = req.body;
 
   try {
-    const article = await Article.findByPk(req.params.id);
+    const article = req.article;
 
     if (!article) {
       return res.status(404).json({ error: "Not found" });
@@ -129,7 +144,7 @@ export const updateArticle = async (req, res) => {
 // DELETE /api/articles/:id
 export const deleteArticle = async (req, res) => {
   try {
-    const article = await Article.findByPk(req.params.id);
+    const article = req.article;
 
     if (!article) {
       return res.status(404).json({ error: "Not found" });
@@ -141,5 +156,21 @@ export const deleteArticle = async (req, res) => {
   } catch (err) {
     console.error("DB error:", err);
     res.status(500).json({ error: "Failed to delete article" });
+  }
+};
+
+export const getArticleVersions = async (req, res) => {
+  try {
+    const article = req.article;   // requireArticleOwnerOrAdmin
+
+    const versions = await db.ArticleVersion.findAll({
+      where: { articleId: article.id },
+      order: [["versionNumber", "DESC"]],
+    });
+
+    res.json(versions);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to load versions" });
   }
 };

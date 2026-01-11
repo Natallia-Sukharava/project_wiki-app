@@ -9,6 +9,11 @@ export default (sequelize, DataTypes) => {
         onDelete: "CASCADE",
       });
 
+      Article.belongsTo(models.User, {
+        foreignKey: "userId",
+        as: "author",
+      });      
+
       Article.hasMany(models.Comment, {
         foreignKey: "articleId",
         as: "comments",
@@ -27,11 +32,16 @@ export default (sequelize, DataTypes) => {
     {
       title: DataTypes.STRING,
       content: DataTypes.TEXT,
-      workspaceId: {
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      workspaceId: {  
         type: DataTypes.INTEGER,
         allowNull: false,
       },
     },
+    
     {
       sequelize,
       modelName: "Article",
