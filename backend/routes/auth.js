@@ -95,8 +95,9 @@ router.post("/login", async (req, res) => {
       token,
       user: {
         id: user.id,
-        email: user.email
-      }
+        email: user.email,
+        role: user.role
+      }      
     });
 
   } catch (err) {

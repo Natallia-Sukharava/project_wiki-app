@@ -28,6 +28,14 @@ JWT-based authentication is implemented.
 Users must register and login to obtain a JWT token.
 The token is required to access protected API routes.
 
+## Role-Based Access Control
+
+The app uses role-based access control with two roles: admin and user.  
+Only article creators or admins can edit articles.  
+User management is available to admins only.  
+Access control is enforced on both backend and frontend.
+
+
 ## Project structure
 
 project_wiki-app/
@@ -122,6 +130,12 @@ When JWT expires or becomes invalid:
   user session is cleared
   user is redirected to Login page
 
+  ## User Management (Admin only)
+
+Admins can view all users and change their roles (admin/user).  
+This page is hidden from regular users and protected by backend authorization.
+
+
 ## Installation
 
 ### Clone the repository
@@ -165,3 +179,10 @@ http://localhost:5173
 
 Backend: Node.js, Express, Sequelize ORM, PostgreSQL, multer, WebSockets, JWT Authentication(jsonwebtoken), Password hashing (bcrypt)
 Frontend: React, React Router, React Quill, Vite, JWT handling via LocalStorage, Protected Routes
+
+## Security
+
+JWT authentication
+Password hashing with bcrypt
+Role-based access control (RBAC)
+Protected frontend routes

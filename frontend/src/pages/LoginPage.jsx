@@ -17,8 +17,15 @@ export default function LoginPage() {
       localStorage.setItem("token", data.token);
 
       if (data.user) {
-        localStorage.setItem("user", JSON.stringify(data.user));
-      }
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            id: data.user.id,
+            email: data.user.email,
+            role: data.user.role,
+          })
+        );
+      }      
 
       toast.success("Login successful!");
       navigate("/");

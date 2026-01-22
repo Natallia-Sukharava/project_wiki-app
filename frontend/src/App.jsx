@@ -13,6 +13,7 @@ import { createWorkspace } from "./api/articles";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import AdminUsers from "./pages/AdminUsers";
 import "./styles/App.css";
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
 
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
   
           <Route
             path="/"

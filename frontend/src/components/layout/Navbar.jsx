@@ -30,6 +30,9 @@ export default function Navbar({ onCreateWorkspace }) {
     <>
       <Link to="/">Home</Link>
       <Link to="/new">New Article</Link>
+      {user?.role === "admin" && (
+      <Link to="/admin/users">User Management</Link>
+    )}
       <span className="navbar-link" onClick={onCreateWorkspace}>
         New Workspace
       </span>
