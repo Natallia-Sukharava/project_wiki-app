@@ -28,7 +28,12 @@ export default function Navbar({ onCreateWorkspace }) {
 
   {token && (
     <>
-      <Link to="/">Home</Link>
+      <span
+        className="navbar-link"
+        onClick={() => navigate("/", { state: { reset: true } })}
+      >
+        Home
+      </span>
       <Link to="/new">New Article</Link>
       {user?.role === "admin" && (
       <Link to="/admin/users">User Management</Link>

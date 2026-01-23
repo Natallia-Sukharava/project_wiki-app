@@ -1,27 +1,48 @@
 import db from "../models/index.js";
 import { notifyArticleCreated, notifyArticleUpdated } from "../server.js";
+import { Op } from "sequelize";
 
 const Article = db.Article;
 const ArticleVersion = db.ArticleVersion;
 
 // GET /api/articles
 export const getAllArticles = async (req, res) => {
+  const { search } = req.query;
   try {
-    const articles = await Article.findAll({
-      attributes: ["id", "title", "workspaceId"],
-      include: [
-        {
-          model: db.Workspace,
-          as: "workspace",
-          attributes: ["name"],
-        },
-        {
-          model: db.User,
-          as: "author",
-          attributes: ["id", "email", "role"]
-        }        
-      ],
-    });
+    
+const whereCondition = {};
+
+if (search && search.trim() !== "") {
+  whereCondition[Op.or] = [
+    {
+      title: {
+        [Op.iLike]: `%${search}%`,
+      },
+    },
+    {
+      content: {
+        [Op.iLike]: `%${search}%`,
+      },
+    },
+  ];
+}
+
+const articles = await Article.findAll({
+  attributes: ["id", "title", "workspaceId"],
+  where: whereCondition, 
+  include: [
+    {
+      model: db.Workspace,
+      as: "workspace",
+      attributes: ["name"],
+    },
+    {
+      model: db.User,
+      as: "author",
+      attributes: ["id", "email", "role"]
+    }
+  ],
+});
 
     res.json(articles);
   } catch (err) {

@@ -19,7 +19,6 @@ async function apiFetch(url, options = {}) {
     },
   });
 
-  // Неверный токен → 401
   if (res.status === 401) {
     console.warn("🔴 Unauthorized → clearing session");
 
@@ -49,8 +48,18 @@ export const getWorkspaceArticles = async (workspaceId) => {
 
 // ARTICLES
 
-export const getArticles = async () => {
-  const res = await apiFetch(API_URL);
+export const getArticles = async (search = "") => {
+  const params = new URLSearchParams();
+
+  if (search.trim() !== "") {
+    params.append("search", search);
+  }
+
+  const url = params.toString()
+    ? `${API_URL}?${params.toString()}`
+    : API_URL;
+
+  const res = await apiFetch(url);
   return res.json();
 };
 
