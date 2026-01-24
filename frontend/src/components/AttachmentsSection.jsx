@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import {
   getAttachments,
   uploadAttachment,
   deleteAttachment,
-} from "../api/articles";
+} from '../api/articles';
 
 export default function AttachmentsSection({ articleId }) {
   const [items, setItems] = useState([]);
@@ -28,31 +28,31 @@ export default function AttachmentsSection({ articleId }) {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const ok = ["image/jpeg", "image/png", "application/pdf"].includes(
+    const ok = ['image/jpeg', 'image/png', 'application/pdf'].includes(
       file.type
     );
     if (!ok) {
-      toast.error("Only JPG, PNG, or PDF files are allowed");
+      toast.error('Only JPG, PNG, or PDF files are allowed');
       return;
     }
 
     try {
       await uploadAttachment(articleId, file);
-      toast.success("File uploaded");
-      e.target.value = "";
+      toast.success('File uploaded');
+      e.target.value = '';
       await load();
     } catch (err) {
-      toast.error(err.message || "Upload failed");
+      toast.error(err.message || 'Upload failed');
     }
   };
 
   const handleDelete = async (filename) => {
     try {
       await deleteAttachment(articleId, filename);
-      toast.success("Attachment deleted");
+      toast.success('Attachment deleted');
       await load();
     } catch (err) {
-      toast.error("Failed to delete attachment");
+      toast.error('Failed to delete attachment');
     }
   };
 
@@ -60,12 +60,12 @@ export default function AttachmentsSection({ articleId }) {
     <div
       style={{
         padding: 12,
-        border: "1px solid #eee",
+        border: '1px solid #eee',
         borderRadius: 12,
         marginBottom: 16,
       }}
     >
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+      <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
         <strong>Attachments</strong>
         <input
           type="file"
@@ -85,7 +85,7 @@ export default function AttachmentsSection({ articleId }) {
 
               <button
                 onClick={() => handleDelete(a.storedAs)}
-                style={{ marginLeft: "10px", color: "red" }}
+                style={{ marginLeft: '10px', color: 'red' }}
               >
                 Delete
               </button>

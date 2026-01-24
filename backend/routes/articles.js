@@ -16,6 +16,7 @@ const router = express.Router();
 router.get("/", getAllArticles);
 router.get("/:id", getArticleById);
 router.post("/", createArticle);
+router.post("/", authMiddleware, createArticle);
 router.put("/:id", requireArticleOwnerOrAdmin, updateArticle);
 router.delete("/:id", requireArticleOwnerOrAdmin, deleteArticle);
 router.use("/:id/attachments", attachmentsRouter);

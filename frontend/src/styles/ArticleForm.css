@@ -33,4 +33,11 @@
   .ql-editor {
     min-height: 200px;
   }
+
+  .form-error {
+    color: #d32f2f;
+    font-size: 0.9rem;
+    margin-top: 4px;
+  }
+  
   

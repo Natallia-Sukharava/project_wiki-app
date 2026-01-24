@@ -14,16 +14,31 @@ function ArticleList({
   onClearSearch,
 }) {
   const [modalId, setModalId] = useState(null);
+  const currentUser = JSON.parse(localStorage.getItem("user") || "null");
 
+  const canEdit = (article) => {
+    if (!currentUser) return false;
+    return (
+      currentUser.role === "admin" ||
+      currentUser.id === article.userId
+    );
+  };
+  
   const handleDelete = async (id) => {
     try {
       await deleteArticle(id);
+
+      if (!res || res.error) {
+        throw new Error(res?.error || "Not authorized");
+      }
+      
       toast.success("Article deleted successfully!");
       setModalId(null);
       onClearSearch();
     } catch (error) {
       console.error("Error deleting article:", error);
       toast.error(error.message || "Failed to delete article.");
+      setModalId(null);
     }
   };
 
@@ -84,19 +99,20 @@ function ArticleList({
                 )}
               </div>
 
+              {canEdit(article) && (
               <div className="article-actions">
                 <Link to={`/edit/${article.id}`} className="edit-btn">
                   Edit
                 </Link>
-
                 <button
-                  type="button"
-                  onClick={() => setModalId(article.id)}
-                  className="delete-btn"
+                type="button"
+                onClick={() => setModalId(article.id)}
+                className="delete-btn"
                 >
                   Delete
                 </button>
               </div>
+              )}
             </li>
           ))}
         </ul>

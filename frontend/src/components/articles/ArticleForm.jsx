@@ -1,15 +1,16 @@
-import { useState, useEffect } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import "../../styles/ArticleForm.css";
+import { useState, useEffect } from 'react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import '../../styles/ArticleForm.css';
 
 function ArticleForm({ initialData, workspaces, onSubmit, submitting }) {
-  const [title, setTitle] = useState(initialData?.title || "");
-  const [content, setContent] = useState(initialData?.content || "");
-
+  const [title, setTitle] = useState(initialData?.title || '');
+  const [content, setContent] = useState(initialData?.content || '');
   const [workspaceId, setWorkspaceId] = useState(
-    initialData?.workspaceId || workspaces?.[0]?.id || ""
+    initialData?.workspaceId || ''
   );
+  const [workspaceError, setWorkspaceError] = useState('');
+  const [titleError, setTitleError] = useState('');
 
   useEffect(() => {
     if (initialData) {
@@ -21,6 +22,17 @@ function ArticleForm({ initialData, workspaces, onSubmit, submitting }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!title.trim()) {
+      setTitleError('Please enter a title before saving the article.');
+      return;
+    }
+
+    if (!workspaceId) {
+      setWorkspaceError('Please select a workspace before saving the article.');
+      return;
+    }
+
     onSubmit({ title, content, workspaceId });
   };
 
@@ -32,24 +44,30 @@ function ArticleForm({ initialData, workspaces, onSubmit, submitting }) {
           type="text"
           placeholder="Enter title"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
+          onChange={(e) => {
+            setTitle(e.target.value);
+            setTitleError('');
+          }}
         />
 
-        {/* Workspace selector */}
+        {titleError && <p className="form-error">{titleError}</p>}
+
         <select
           value={workspaceId}
-          onChange={(e) => setWorkspaceId(Number(e.target.value))}
-          required
+          onChange={(e) => {
+            setWorkspaceId(Number(e.target.value));
+            setWorkspaceError('');
+          }}
         >
+          <option value="">Select workspace</option>
           {workspaces.map((ws) => (
             <option key={ws.id} value={ws.id}>
               {ws.name}
             </option>
           ))}
         </select>
+        {workspaceError && <p className="form-error">{workspaceError}</p>}
 
-        {/* Content */}
         <ReactQuill
           value={content}
           onChange={setContent}
@@ -57,7 +75,7 @@ function ArticleForm({ initialData, workspaces, onSubmit, submitting }) {
         />
 
         <button type="submit" disabled={submitting}>
-          {submitting ? "Saving..." : "Save"}
+          {submitting ? 'Saving...' : 'Save'}
         </button>
       </form>
     </div>

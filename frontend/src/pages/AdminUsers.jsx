@@ -81,15 +81,20 @@ export default function AdminUsers() {
                 <td>{u.email}</td>
                 <td>{u.role}</td>
                 <td>
-                  {u.role === "admin" ? (
-                    <button onClick={() => changeRole(u.id, "user")}>
-                      Make user
-                    </button>
-                  ) : (
-                    <button onClick={() => changeRole(u.id, "admin")}>
-                      Make admin
-                    </button>
-                  )}
+                {u.id !== currentUser.id && (
+                <>
+                {u.role === "admin" ? (
+                <button onClick={() => changeRole(u.id, "user")}>
+                  Make user
+                </button>
+                ) : (
+                <button onClick={() => changeRole(u.id, "admin")}>
+                  Make admin
+                </button>
+                 )}
+                 </>
+                 )}
+
                 </td>
               </tr>
             ))}

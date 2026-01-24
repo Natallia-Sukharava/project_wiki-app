@@ -32,7 +32,17 @@ function NewArticlePage() {
   return (
     <div className="page">
       <h2>New Article</h2>
-      {workspaces.length > 0 && (
+  
+      {workspaces.length === 0 ? (
+        <div className="empty-message">
+          <p>No workspaces found.</p>
+          <p>Please create a workspace first to add articles.</p>
+  
+          <button onClick={() => navigate("/")}>
+            Go to Home
+          </button>
+        </div>
+      ) : (
         <ArticleForm
           initialData={null}
           workspaces={workspaces}
@@ -41,7 +51,7 @@ function NewArticlePage() {
         />
       )}
     </div>
-  );
+  );  
 }
 
 export default NewArticlePage;
