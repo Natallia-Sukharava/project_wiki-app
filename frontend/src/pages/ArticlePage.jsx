@@ -1,16 +1,17 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   getArticleById,
   createComment,
   deleteComment,
   getArticleVersionsWithCurrent,
   getArticleVersionById,
-} from "../api/articles";
-import { toast } from "react-toastify";
+  downloadArticlePdf,
+} from '../api/articles';
+import { toast } from 'react-toastify';
 
-import ArticleView from "../components/articles/ArticleView";
-import AttachmentsSection from "../components/AttachmentsSection";
+import ArticleView from '../components/articles/ArticleView';
+import AttachmentsSection from '../components/AttachmentsSection';
 
 function ArticlePage() {
   const { id } = useParams();
@@ -19,7 +20,7 @@ function ArticlePage() {
   const [article, setArticle] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const [commentText, setCommentText] = useState("");
+  const [commentText, setCommentText] = useState('');
   const [comments, setComments] = useState([]);
 
   const [showVersions, setShowVersions] = useState(false);
@@ -36,7 +37,7 @@ function ArticlePage() {
         setArticle(data);
         setComments(data.comments || []);
       } catch (err) {
-        toast.error("Failed to load article");
+        toast.error('Failed to load article');
       } finally {
         setLoading(false);
       }
@@ -58,7 +59,7 @@ function ArticlePage() {
       setVersionsData(data);
       setShowVersions(true);
     } catch (err) {
-      toast.error("Failed to load versions");
+      toast.error('Failed to load versions');
     } finally {
       setVersionsLoading(false);
     }
@@ -70,7 +71,26 @@ function ArticlePage() {
       setSelectedVersion(version);
       setShowVersions(false);
     } catch (err) {
-      toast.error("Failed to load version");
+      toast.error('Failed to load version');
+    }
+  };
+
+  const handleExportPdf = async () => {
+    try {
+      const blob = await downloadArticlePdf(id);
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `article_${id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+
+      toast.success('PDF downloaded');
+    } catch (err) {
+      toast.error('Failed to export PDF');
     }
   };
 
@@ -81,10 +101,10 @@ function ArticlePage() {
     try {
       const newComment = await createComment(id, commentText);
       setComments((prev) => [...prev, newComment]);
-      setCommentText("");
-      toast.success("Comment added");
+      setCommentText('');
+      toast.success('Comment added');
     } catch (err) {
-      toast.error("Failed to add comment");
+      toast.error('Failed to add comment');
     }
   };
 
@@ -93,7 +113,7 @@ function ArticlePage() {
       await deleteComment(commentId);
       setComments((prev) => prev.filter((c) => c.id !== commentId));
     } catch (err) {
-      toast.error("Failed to delete comment");
+      toast.error('Failed to delete comment');
     }
   };
 
@@ -116,17 +136,15 @@ function ArticlePage() {
     <div className="page">
       {/* ACTION BUTTONS */}
       <div className="article-actions">
-        <button
-          className="btn btn-secondary"
-          onClick={() => navigate("/")}
-        >
+        <button className="btn btn-secondary" onClick={() => navigate('/')}>
           ← Back
         </button>
 
-        <button
-          className="btn btn-secondary"
-          onClick={handleToggleVersions}
-        >
+        <button className="btn btn-secondary" onClick={handleExportPdf}>
+          Export as PDF
+        </button>
+
+        <button className="btn btn-secondary" onClick={handleToggleVersions}>
           Versions
         </button>
       </div>

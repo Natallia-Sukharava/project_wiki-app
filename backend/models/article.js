@@ -1,29 +1,29 @@
-import { Model } from "sequelize";
+import { Model } from 'sequelize';
 
 export default (sequelize, DataTypes) => {
   class Article extends Model {
     static associate(models) {
       Article.belongsTo(models.Workspace, {
-        foreignKey: "workspaceId",
-        as: "workspace",
-        onDelete: "CASCADE",
+        foreignKey: 'workspaceId',
+        as: 'workspace',
+        onDelete: 'CASCADE',
       });
 
       Article.belongsTo(models.User, {
-        foreignKey: "userId",
-        as: "author",
-      });      
+        foreignKey: 'userId',
+        as: 'author',
+      });
 
       Article.hasMany(models.Comment, {
-        foreignKey: "articleId",
-        as: "comments",
-        onDelete: "CASCADE",
+        foreignKey: 'articleId',
+        as: 'comments',
+        onDelete: 'CASCADE',
       });
 
       Article.hasMany(models.ArticleVersion, {
-        foreignKey: "articleId",
-        as: "versions",
-        onDelete: "CASCADE",
+        foreignKey: 'articleId',
+        as: 'versions',
+        onDelete: 'CASCADE',
       });
     }
   }
@@ -36,16 +36,16 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      workspaceId: {  
+      workspaceId: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
     },
-    
+
     {
       sequelize,
-      modelName: "Article",
-      tableName: "Articles",
+      modelName: 'Article',
+      tableName: 'Articles',
       timestamps: true,
     }
   );

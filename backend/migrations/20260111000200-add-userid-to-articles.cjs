@@ -1,16 +1,16 @@
-"use strict";
+'use strict';
 
 module.exports = {
   async up(queryInterface, Sequelize) {
     // 1. Add column as nullable
-    await queryInterface.addColumn("Articles", "userId", {
+    await queryInterface.addColumn('Articles', 'userId', {
       type: Sequelize.INTEGER,
       allowNull: true,
       references: {
-        model: "Users",
-        key: "id",
+        model: 'Users',
+        key: 'id',
       },
-      onDelete: "CASCADE",
+      onDelete: 'CASCADE',
     });
 
     // 2. Set all existing articles to belong to first user (admin later)
@@ -25,13 +25,13 @@ module.exports = {
     }
 
     // 3. Make userId NOT NULL
-    await queryInterface.changeColumn("Articles", "userId", {
+    await queryInterface.changeColumn('Articles', 'userId', {
       type: Sequelize.INTEGER,
       allowNull: false,
     });
   },
 
   async down(queryInterface) {
-    await queryInterface.removeColumn("Articles", "userId");
+    await queryInterface.removeColumn('Articles', 'userId');
   },
 };

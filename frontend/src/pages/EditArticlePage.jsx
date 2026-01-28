@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { getArticleById, getWorkspaces, updateArticle } from "../api/articles";
-import { toast } from "react-toastify";
-import ArticleForm from "../components/articles/ArticleForm";
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { getArticleById, getWorkspaces, updateArticle } from '../api/articles';
+import { toast } from 'react-toastify';
+import ArticleForm from '../components/articles/ArticleForm';
 
 function EditArticlePage() {
   const { id } = useParams();
@@ -20,8 +20,8 @@ function EditArticlePage() {
         setArticle(articleData);
         setWorkspaces(ws);
       } catch (err) {
-        toast.error("Failed to load article");
-        navigate("/");
+        toast.error('Failed to load article');
+        navigate('/');
       }
     })();
   }, [id]);
@@ -30,7 +30,7 @@ function EditArticlePage() {
     setSubmitting(true);
     try {
       await updateArticle(id, data);
-      toast.success("Article updated");
+      toast.success('Article updated');
       navigate(`/article/${id}`);
     } catch (err) {
       toast.error(err.message);

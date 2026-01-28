@@ -1,6 +1,6 @@
 export default (sequelize, DataTypes) => {
   const Workspace = sequelize.define(
-    "Workspace",
+    'Workspace',
     {
       id: {
         type: DataTypes.INTEGER,
@@ -13,16 +13,16 @@ export default (sequelize, DataTypes) => {
       },
     },
     {
-      tableName: "Workspaces",
+      tableName: 'Workspaces',
       timestamps: true,
     }
   );
 
   Workspace.associate = (models) => {
     Workspace.hasMany(models.Article, {
-      foreignKey: "workspaceId",
-      as: "articles",
-      onDelete: "CASCADE",
+      foreignKey: 'workspaceId',
+      as: 'articles',
+      onDelete: 'CASCADE',
     });
   };
 

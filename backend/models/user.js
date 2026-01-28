@@ -1,10 +1,8 @@
-import { Model } from "sequelize";
+import { Model } from 'sequelize';
 
 export default (sequelize, DataTypes) => {
   class User extends Model {
-    static associate(models) {
-      
-    }
+    static associate(models) {}
   }
 
   User.init(
@@ -21,17 +19,17 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      
+
       role: {
-        type: DataTypes.ENUM("admin", "user"),
+        type: DataTypes.ENUM('admin', 'user'),
         allowNull: false,
-        defaultValue: "user",
-      },      
+        defaultValue: 'user',
+      },
     },
     {
       sequelize,
-      modelName: "User",
-      tableName: "Users",
+      modelName: 'User',
+      tableName: 'Users',
       timestamps: true,
     }
   );

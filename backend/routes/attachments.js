@@ -1,17 +1,17 @@
-import express from "express";
-import multer from "multer";
-import path from "path";
-import fs from "fs";
-import { fileURLToPath } from "url";
-import { notifyAttachmentAdded } from "../server.js";
+import express from 'express';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { notifyAttachmentAdded } from '../server.js';
 
 const router = express.Router({ mergeParams: true });
 
 const currentFile = fileURLToPath(import.meta.url);
 const currentDir = path.dirname(currentFile);
-const uploadsRoot = path.join(currentDir, "..", "uploads");
+const uploadsRoot = path.join(currentDir, '..', 'uploads');
 
-const ALLOWED = new Set(["image/jpeg", "image/png", "application/pdf"]);
+const ALLOWED = new Set(['image/jpeg', 'image/png', 'application/pdf']);
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -21,14 +21,15 @@ const storage = multer.diskStorage({
     cb(null, dir);
   },
   filename: (req, file, cb) => {
-    const safeName = Date.now() + "-" + file.originalname.replace(/[^\w.\-]+/g, "_");
+    const safeName =
+      Date.now() + '-' + file.originalname.replace(/[^\w.\-]+/g, '_');
     cb(null, safeName);
   },
 });
 
 function fileFilter(req, file, cb) {
   if (!ALLOWED.has(file.mimetype)) {
-    return cb(new Error("Only JPG, PNG, or PDF allowed"));
+    return cb(new Error('Only JPG, PNG, or PDF allowed'));
   }
   cb(null, true);
 }
@@ -39,13 +40,15 @@ const upload = multer({
   limits: { fileSize: 10 * 1024 * 1024 },
 });
 
-router.post("/", upload.single("file"), (req, res) => {
+router.post('/', upload.single('file'), (req, res) => {
   const { id } = req.params;
   const file = req.file;
 
-  if (!file) return res.status(400).json({ error: "No file uploaded" });
+  if (!file) return res.status(400).json({ error: 'No file uploaded' });
 
-  const url = `${req.protocol}://${req.get("host")}/uploads/${id}/${file.filename}`;
+  const url = `${req.protocol}://${req.get('host')}/uploads/${id}/${
+    file.filename
+  }`;
 
   notifyAttachmentAdded(id, file);
 
@@ -58,41 +61,41 @@ router.post("/", upload.single("file"), (req, res) => {
   });
 });
 
-router.delete("/:filename", (req, res) => {
+router.delete('/:filename', (req, res) => {
   const { id, filename } = req.params;
 
   const filePath = path.join(uploadsRoot, id, filename);
 
   if (!fs.existsSync(filePath)) {
-    return res.status(404).json({ error: "File not found" });
+    return res.status(404).json({ error: 'File not found' });
   }
 
   try {
     fs.unlinkSync(filePath);
     res.json({ success: true });
   } catch (err) {
-    res.status(500).json({ error: "Failed to delete file" });
+    res.status(500).json({ error: 'Failed to delete file' });
   }
 });
 
-router.get("/", (req, res) => {
+router.get('/', (req, res) => {
   const { id } = req.params;
   const dir = path.join(uploadsRoot, id);
 
   if (!fs.existsSync(dir)) return res.json([]);
 
-  const hostUrl = `${req.protocol}://${req.get("host")}`;
+  const hostUrl = `${req.protocol}://${req.get('host')}`;
 
-const list = fs.readdirSync(dir).map((name) => ({
-  storedAs: name,
-  url: `${hostUrl}/uploads/${id}/${name}`,
-}));
+  const list = fs.readdirSync(dir).map((name) => ({
+    storedAs: name,
+    url: `${hostUrl}/uploads/${id}/${name}`,
+  }));
 
   res.json(list);
 });
 
 router.use((err, req, res, next) => {
-  if (err instanceof multer.MulterError || err.message.includes("Only")) {
+  if (err instanceof multer.MulterError || err.message.includes('Only')) {
     return res.status(400).json({ error: err.message });
   }
   next(err);

@@ -7,24 +7,24 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       title: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
       },
       content: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
       },
       workspaceId: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "Workspaces",
-          key: "id"
+          model: 'Workspaces',
+          key: 'id',
         },
-        onDelete: "CASCADE"
+        onDelete: 'CASCADE',
       },
       createdAt: {
         allowNull: false,
@@ -33,11 +33,11 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
-      }
+      },
     });
   },
 
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Articles');
-  }
+  },
 };

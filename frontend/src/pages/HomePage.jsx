@@ -1,17 +1,21 @@
-import { useEffect, useState, useCallback } from "react";
-import ArticleList from "../components/articles/ArticleList";
-import { getArticles, getWorkspaces, getWorkspaceArticles } from "../api/articles";
-import { toast } from "react-toastify";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState, useCallback } from 'react';
+import ArticleList from '../components/articles/ArticleList';
+import {
+  getArticles,
+  getWorkspaces,
+  getWorkspaceArticles,
+} from '../api/articles';
+import { toast } from 'react-toastify';
+import { useLocation } from 'react-router-dom';
 
 function HomePage() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [workspaces, setWorkspaces] = useState([]);
-  const [selectedWorkspace, setSelectedWorkspace] = useState("all");
+  const [selectedWorkspace, setSelectedWorkspace] = useState('all');
   const location = useLocation();
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
 
   const loadWorkspaces = useCallback(async () => {
     const ws = await getWorkspaces();
@@ -24,24 +28,24 @@ function HomePage() {
       try {
         let data = [];
 
-        if (selectedWorkspace !== "all") {
+        if (selectedWorkspace !== 'all') {
           data = await getWorkspaceArticles(selectedWorkspace);
 
-          if (searchText && searchText.trim() !== "") {
+          if (searchText && searchText.trim() !== '') {
             const q = searchText.toLowerCase();
             data = data.filter((a) => {
-              const title = (a.title || "").toLowerCase();
-              const content = (a.content || "").toLowerCase();
+              const title = (a.title || '').toLowerCase();
+              const content = (a.content || '').toLowerCase();
               return title.includes(q) || content.includes(q);
             });
           }
         } else {
-          data = await getArticles(searchText || "");
+          data = await getArticles(searchText || '');
         }
 
         setArticles(data);
       } catch (err) {
-        toast.error("Failed to load articles.");
+        toast.error('Failed to load articles.');
       } finally {
         setLoading(false);
       }
@@ -55,13 +59,13 @@ function HomePage() {
 
   useEffect(() => {
     loadArticles(search);
-  }, [selectedWorkspace]); 
+  }, [selectedWorkspace]);
 
   const handleSearchChange = (value) => {
     setSearch(value);
 
-    if (value.trim() === "") {
-      loadArticles("");
+    if (value.trim() === '') {
+      loadArticles('');
     }
   };
 
@@ -70,27 +74,27 @@ function HomePage() {
   };
 
   const clearSearch = () => {
-    setSearch("");
-    loadArticles("");
+    setSearch('');
+    loadArticles('');
   };
   useEffect(() => {
     if (location.state?.reset) {
       clearSearch();
     }
   }, [location.state]);
-  
+
   useEffect(() => {
     const handleHomeClick = () => {
       clearSearch();
     };
-  
-    window.addEventListener("home-click", handleHomeClick);
-  
+
+    window.addEventListener('home-click', handleHomeClick);
+
     return () => {
-      window.removeEventListener("home-click", handleHomeClick);
+      window.removeEventListener('home-click', handleHomeClick);
     };
   }, []);
-  
+
   return (
     <div className="home-container">
       <div className="articles-header">

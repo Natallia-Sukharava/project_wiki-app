@@ -1,4 +1,4 @@
-import "../../styles/ArticleView.css";
+import '../../styles/ArticleView.css';
 
 function ArticleView({ article }) {
   if (!article) return null;
@@ -8,9 +8,7 @@ function ArticleView({ article }) {
       <h2>{article.title}</h2>
 
       {article.workspaceId && (
-        <p className="article-meta">
-          Workspace #{article.workspaceId}
-        </p>
+        <p className="article-meta">Workspace #{article.workspaceId}</p>
       )}
 
       <div

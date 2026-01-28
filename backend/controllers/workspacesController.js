@@ -1,16 +1,16 @@
-import db from "../models/index.js";
+import db from '../models/index.js';
 
 // Create workspace
 export const createWorkspace = async (req, res) => {
   try {
     const workspace = await db.Workspace.create({
-      name: req.body.name
+      name: req.body.name,
     });
 
     res.json(workspace);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to create workspace" });
+    res.status(500).json({ error: 'Failed to create workspace' });
   }
 };
 
@@ -21,7 +21,7 @@ export const getAllWorkspaces = async (req, res) => {
     res.json(workspaces);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to fetch workspaces" });
+    res.status(500).json({ error: 'Failed to fetch workspaces' });
   }
 };
 
@@ -32,35 +32,35 @@ export const getWorkspaceById = async (req, res) => {
       include: [
         {
           model: db.Article,
-          as: "articles",
-        }
+          as: 'articles',
+        },
       ],
     });
 
     if (!workspace) {
-      return res.status(404).json({ error: "Workspace not found" });
+      return res.status(404).json({ error: 'Workspace not found' });
     }
 
     res.json(workspace);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to fetch workspace" });
+    res.status(500).json({ error: 'Failed to fetch workspace' });
   }
 };
 
-// Get ONLY articles of a workspace 
+// Get ONLY articles of a workspace
 export const getWorkspaceArticles = async (req, res) => {
   try {
     const workspaceId = req.params.id;
 
     const articles = await db.Article.findAll({
-      where: { workspaceId }
+      where: { workspaceId },
     });
 
     res.json(articles);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to fetch workspace articles" });
+    res.status(500).json({ error: 'Failed to fetch workspace articles' });
   }
 };
 
@@ -70,7 +70,7 @@ export const updateWorkspace = async (req, res) => {
     const workspace = await db.Workspace.findByPk(req.params.id);
 
     if (!workspace) {
-      return res.status(404).json({ error: "Workspace not found" });
+      return res.status(404).json({ error: 'Workspace not found' });
     }
 
     await workspace.update({ name: req.body.name });
@@ -78,7 +78,7 @@ export const updateWorkspace = async (req, res) => {
     res.json(workspace);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to update workspace" });
+    res.status(500).json({ error: 'Failed to update workspace' });
   }
 };
 
@@ -88,13 +88,13 @@ export const deleteWorkspace = async (req, res) => {
     const workspace = await db.Workspace.findByPk(req.params.id);
 
     if (!workspace) {
-      return res.status(404).json({ error: "Workspace not found" });
+      return res.status(404).json({ error: 'Workspace not found' });
     }
 
     await workspace.destroy();
-    res.json({ message: "Workspace deleted" });
+    res.json({ message: 'Workspace deleted' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to delete workspace" });
+    res.status(500).json({ error: 'Failed to delete workspace' });
   }
 };

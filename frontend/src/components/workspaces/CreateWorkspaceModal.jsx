@@ -1,4 +1,4 @@
-import "../../styles/CreateWorkspaceModal.css";
+import '../../styles/CreateWorkspaceModal.css';
 
 function CreateWorkspaceModal({ onClose, onSubmit }) {
   const handleSubmit = (e) => {

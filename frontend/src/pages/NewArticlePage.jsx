@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { createArticle, getWorkspaces } from "../api/articles";
-import ArticleForm from "../components/articles/ArticleForm";
-import { toast } from "react-toastify";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { createArticle, getWorkspaces } from '../api/articles';
+import ArticleForm from '../components/articles/ArticleForm';
+import { toast } from 'react-toastify';
 
 function NewArticlePage() {
   const [workspaces, setWorkspaces] = useState([]);
@@ -20,7 +20,7 @@ function NewArticlePage() {
     setSubmitting(true);
     try {
       const created = await createArticle(data);
-      toast.success("Article created");
+      toast.success('Article created');
       navigate(`/article/${created.id}`);
     } catch (err) {
       toast.error(err.message);
@@ -32,15 +32,13 @@ function NewArticlePage() {
   return (
     <div className="page">
       <h2>New Article</h2>
-  
+
       {workspaces.length === 0 ? (
         <div className="empty-message">
           <p>No workspaces found.</p>
           <p>Please create a workspace first to add articles.</p>
-  
-          <button onClick={() => navigate("/")}>
-            Go to Home
-          </button>
+
+          <button onClick={() => navigate('/')}>Go to Home</button>
         </div>
       ) : (
         <ArticleForm
@@ -51,7 +49,7 @@ function NewArticlePage() {
         />
       )}
     </div>
-  );  
+  );
 }
 
 export default NewArticlePage;

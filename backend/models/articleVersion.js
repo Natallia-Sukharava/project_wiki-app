@@ -1,12 +1,12 @@
-import { Model } from "sequelize";
+import { Model } from 'sequelize';
 
 export default (sequelize, DataTypes) => {
   class ArticleVersion extends Model {
     static associate(models) {
       ArticleVersion.belongsTo(models.Article, {
-        foreignKey: "articleId",
-        as: "article",
-        onDelete: "CASCADE",
+        foreignKey: 'articleId',
+        as: 'article',
+        onDelete: 'CASCADE',
       });
     }
   }
@@ -36,10 +36,10 @@ export default (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "ArticleVersion",
-      tableName: "ArticleVersions",
+      modelName: 'ArticleVersion',
+      tableName: 'ArticleVersions',
       timestamps: true,
-      updatedAt: false, 
+      updatedAt: false,
     }
   );
 

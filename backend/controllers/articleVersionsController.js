@@ -1,24 +1,24 @@
-import db from "../models/index.js";
+import db from '../models/index.js';
 
 const ArticleVersion = db.ArticleVersion;
 const Article = db.Article;
 
 /**
  * GET /api/article-versions/:id
- * Получить список версий статьи (БЕЗ currentVersion, как было)
+ * Получить список версий статьи
  */
 export const getArticleVersions = async (req, res) => {
   try {
     const versions = await ArticleVersion.findAll({
       where: { articleId: req.params.id },
-      attributes: ["id", "versionNumber", "createdAt"],
-      order: [["versionNumber", "DESC"]],
+      attributes: ['id', 'versionNumber', 'createdAt'],
+      order: [['versionNumber', 'DESC']],
     });
 
     res.json(versions);
   } catch (err) {
-    console.error("DB error:", err);
-    res.status(500).json({ error: "Failed to fetch versions" });
+    console.error('DB error:', err);
+    res.status(500).json({ error: 'Failed to fetch versions' });
   }
 };
 
@@ -33,13 +33,13 @@ export const getArticleVersionsWithCurrent = async (req, res) => {
     // существует ли статья
     const article = await Article.findByPk(id);
     if (!article) {
-      return res.status(404).json({ error: "Article not found" });
+      return res.status(404).json({ error: 'Article not found' });
     }
 
     const versions = await ArticleVersion.findAll({
       where: { articleId: id },
-      attributes: ["id", "versionNumber", "createdAt"],
-      order: [["versionNumber", "ASC"]],
+      attributes: ['id', 'versionNumber', 'createdAt'],
+      order: [['versionNumber', 'ASC']],
     });
 
     if (!versions.length) {
@@ -49,8 +49,7 @@ export const getArticleVersionsWithCurrent = async (req, res) => {
       });
     }
 
-    const currentVersionNumber =
-      versions[versions.length - 1].versionNumber;
+    const currentVersionNumber = versions[versions.length - 1].versionNumber;
 
     // isLatest
     const versionsWithFlag = versions.map((version) => ({
@@ -65,8 +64,8 @@ export const getArticleVersionsWithCurrent = async (req, res) => {
       versions: versionsWithFlag,
     });
   } catch (err) {
-    console.error("DB error:", err);
-    res.status(500).json({ error: "Failed to fetch versions with current" });
+    console.error('DB error:', err);
+    res.status(500).json({ error: 'Failed to fetch versions with current' });
   }
 };
 
@@ -79,12 +78,12 @@ export const getArticleVersionById = async (req, res) => {
     const version = await ArticleVersion.findByPk(req.params.versionId);
 
     if (!version) {
-      return res.status(404).json({ error: "Version not found" });
+      return res.status(404).json({ error: 'Version not found' });
     }
 
     res.json(version);
   } catch (err) {
-    console.error("DB error:", err);
-    res.status(500).json({ error: "Failed to fetch version" });
+    console.error('DB error:', err);
+    res.status(500).json({ error: 'Failed to fetch version' });
   }
 };

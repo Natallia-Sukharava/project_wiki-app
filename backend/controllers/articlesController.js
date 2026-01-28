@@ -1,6 +1,7 @@
-import db from "../models/index.js";
-import { notifyArticleCreated, notifyArticleUpdated } from "../server.js";
-import { Op } from "sequelize";
+import db from '../models/index.js';
+import { notifyArticleCreated, notifyArticleUpdated } from '../server.js';
+import { Op } from 'sequelize';
+import { writeArticlePdfToResponse } from '../utils/pdf.js';
 
 const Article = db.Article;
 const ArticleVersion = db.ArticleVersion;
@@ -9,45 +10,44 @@ const ArticleVersion = db.ArticleVersion;
 export const getAllArticles = async (req, res) => {
   const { search } = req.query;
   try {
-    
-const whereCondition = {};
+    const whereCondition = {};
 
-if (search && search.trim() !== "") {
-  whereCondition[Op.or] = [
-    {
-      title: {
-        [Op.iLike]: `%${search}%`,
-      },
-    },
-    {
-      content: {
-        [Op.iLike]: `%${search}%`,
-      },
-    },
-  ];
-}
-
-const articles = await Article.findAll({
-  attributes: ["id", "title", "workspaceId"],
-  where: whereCondition, 
-  include: [
-    {
-      model: db.Workspace,
-      as: "workspace",
-      attributes: ["name"],
-    },
-    {
-      model: db.User,
-      as: "author",
-      attributes: ["id", "email", "role"]
+    if (search && search.trim() !== '') {
+      whereCondition[Op.or] = [
+        {
+          title: {
+            [Op.iLike]: `%${search}%`,
+          },
+        },
+        {
+          content: {
+            [Op.iLike]: `%${search}%`,
+          },
+        },
+      ];
     }
-  ],
-});
+
+    const articles = await Article.findAll({
+      attributes: ['id', 'title', 'workspaceId'],
+      where: whereCondition,
+      include: [
+        {
+          model: db.Workspace,
+          as: 'workspace',
+          attributes: ['name'],
+        },
+        {
+          model: db.User,
+          as: 'author',
+          attributes: ['id', 'email', 'role'],
+        },
+      ],
+    });
 
     res.json(articles);
   } catch (err) {
-    console.error("DB error:", err);
-    res.status(500).json({ error: "Failed to fetch articles" });
+    console.error('DB error:', err);
+    res.status(500).json({ error: 'Failed to fetch articles' });
   }
 };
 
@@ -58,29 +58,29 @@ export const getArticleById = async (req, res) => {
       include: [
         {
           model: db.Workspace,
-          as: "workspace",
-          attributes: ["name"],
+          as: 'workspace',
+          attributes: ['name'],
         },
         {
           model: db.Comment,
-          as: "comments",
+          as: 'comments',
         },
         {
           model: db.User,
-          as: "author",
-          attributes: ["id", "email", "role"]
-        }        
+          as: 'author',
+          attributes: ['id', 'email', 'role'],
+        },
       ],
     });
 
     if (!article) {
-      return res.status(404).json({ error: "Article not found" });
+      return res.status(404).json({ error: 'Article not found' });
     }
 
     res.json(article);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to fetch article" });
+    res.status(500).json({ error: 'Failed to fetch article' });
   }
 };
 
@@ -89,7 +89,7 @@ export const createArticle = async (req, res) => {
   const { title, content, workspaceId } = req.body;
 
   if (!workspaceId) {
-    return res.status(400).json({ error: "workspaceId is required" });
+    return res.status(400).json({ error: 'workspaceId is required' });
   }
 
   try {
@@ -98,8 +98,8 @@ export const createArticle = async (req, res) => {
       content,
       workspaceId,
       userId: req.user.id,
-    });    
-  
+    });
+
     // создаём первую версию статьи
     await ArticleVersion.create({
       articleId: article.id,
@@ -108,13 +108,13 @@ export const createArticle = async (req, res) => {
       workspaceId,
       versionNumber: 1,
     });
-  
+
     notifyArticleCreated(article);
-  
+
     res.json(article);
   } catch (err) {
-    console.error("DB error:", err);
-    res.status(500).json({ error: "Failed to create article" });
+    console.error('DB error:', err);
+    res.status(500).json({ error: 'Failed to create article' });
   }
 };
 
@@ -126,18 +126,16 @@ export const updateArticle = async (req, res) => {
     const article = req.article;
 
     if (!article) {
-      return res.status(404).json({ error: "Not found" });
+      return res.status(404).json({ error: 'Not found' });
     }
 
     // последняя версия
     const lastVersion = await ArticleVersion.findOne({
       where: { articleId: article.id },
-      order: [["versionNumber", "DESC"]],
+      order: [['versionNumber', 'DESC']],
     });
 
-    const nextVersionNumber = lastVersion
-      ? lastVersion.versionNumber + 1
-      : 1;
+    const nextVersionNumber = lastVersion ? lastVersion.versionNumber + 1 : 1;
 
     // сохраняем текущую статью как версию
     await ArticleVersion.create({
@@ -146,7 +144,7 @@ export const updateArticle = async (req, res) => {
       content,
       workspaceId: article.workspaceId,
       versionNumber: nextVersionNumber,
-    });    
+    });
 
     // обновляем текущую статью
     article.title = title;
@@ -157,8 +155,8 @@ export const updateArticle = async (req, res) => {
 
     res.json(article);
   } catch (err) {
-    console.error("DB error:", err);
-    res.status(500).json({ error: "Failed to update article" });
+    console.error('DB error:', err);
+    res.status(500).json({ error: 'Failed to update article' });
   }
 };
 
@@ -168,30 +166,52 @@ export const deleteArticle = async (req, res) => {
     const article = req.article;
 
     if (!article) {
-      return res.status(404).json({ error: "Not found" });
+      return res.status(404).json({ error: 'Not found' });
     }
 
     await article.destroy();
 
-    res.json({ message: "Deleted" });
+    res.json({ message: 'Deleted' });
   } catch (err) {
-    console.error("DB error:", err);
-    res.status(500).json({ error: "Failed to delete article" });
+    console.error('DB error:', err);
+    res.status(500).json({ error: 'Failed to delete article' });
   }
 };
 
 export const getArticleVersions = async (req, res) => {
   try {
-    const article = req.article;   // requireArticleOwnerOrAdmin
+    const article = req.article; // requireArticleOwnerOrAdmin
 
     const versions = await db.ArticleVersion.findAll({
       where: { articleId: article.id },
-      order: [["versionNumber", "DESC"]],
+      order: [['versionNumber', 'DESC']],
     });
 
     res.json(versions);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Failed to load versions" });
+    res.status(500).json({ error: 'Failed to load versions' });
+  }
+};
+
+// GET /api/articles/:id/pdf
+export const exportArticlePdf = async (req, res) => {
+  try {
+    const article = await Article.findByPk(req.params.id, {
+      include: [
+        { model: db.Workspace, as: 'workspace', attributes: ['name'] },
+        { model: db.User, as: 'author', attributes: ['email'] },
+      ],
+    });
+
+    if (!article) {
+      return res.status(404).json({ error: 'Article not found' });
+    }
+
+    // PDF стримится в ответ
+    writeArticlePdfToResponse(res, article);
+  } catch (err) {
+    console.error('PDF export error:', err);
+    res.status(500).json({ error: 'Failed to generate PDF' });
   }
 };

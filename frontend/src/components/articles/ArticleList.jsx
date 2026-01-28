@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { deleteArticle } from "../../api/articles";
-import { toast } from "react-toastify";
-import "../../styles/ArticleList.css";
-import "../../styles/DeleteConfirmModal.css";
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { deleteArticle } from '../../api/articles';
+import { toast } from 'react-toastify';
+import '../../styles/ArticleList.css';
+import '../../styles/DeleteConfirmModal.css';
 
 function ArticleList({
   articles,
@@ -14,30 +14,27 @@ function ArticleList({
   onClearSearch,
 }) {
   const [modalId, setModalId] = useState(null);
-  const currentUser = JSON.parse(localStorage.getItem("user") || "null");
+  const currentUser = JSON.parse(localStorage.getItem('user') || 'null');
 
   const canEdit = (article) => {
     if (!currentUser) return false;
-    return (
-      currentUser.role === "admin" ||
-      currentUser.id === article.userId
-    );
+    return currentUser.role === 'admin' || currentUser.id === article.userId;
   };
-  
+
   const handleDelete = async (id) => {
     try {
       await deleteArticle(id);
 
       if (!res || res.error) {
-        throw new Error(res?.error || "Not authorized");
+        throw new Error(res?.error || 'Not authorized');
       }
-      
-      toast.success("Article deleted successfully!");
+
+      toast.success('Article deleted successfully!');
       setModalId(null);
       onClearSearch();
     } catch (error) {
-      console.error("Error deleting article:", error);
-      toast.error(error.message || "Failed to delete article.");
+      console.error('Error deleting article:', error);
+      toast.error(error.message || 'Failed to delete article.');
       setModalId(null);
     }
   };
@@ -51,7 +48,7 @@ function ArticleList({
           placeholder="Search articles..."
           onChange={(e) => onSearchChange(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
+            if (e.key === 'Enter') {
               onRunSearch();
             }
           }}
@@ -100,18 +97,18 @@ function ArticleList({
               </div>
 
               {canEdit(article) && (
-              <div className="article-actions">
-                <Link to={`/edit/${article.id}`} className="edit-btn">
-                  Edit
-                </Link>
-                <button
-                type="button"
-                onClick={() => setModalId(article.id)}
-                className="delete-btn"
-                >
-                  Delete
-                </button>
-              </div>
+                <div className="article-actions">
+                  <Link to={`/edit/${article.id}`} className="edit-btn">
+                    Edit
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setModalId(article.id)}
+                    className="delete-btn"
+                  >
+                    Delete
+                  </button>
+                </div>
               )}
             </li>
           ))}

@@ -1,19 +1,19 @@
-import { readdirSync } from "fs";
-import path from "path";
-import url from "url";
-import Sequelize from "sequelize";
-import dotenv from "dotenv";
+import { readdirSync } from 'fs';
+import path from 'path';
+import url from 'url';
+import Sequelize from 'sequelize';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
 const rootFile = url.fileURLToPath(import.meta.url);
 const modelsDir = path.dirname(rootFile);
 
-const dbName = process.env.DB_NAME || "wiki_app";
-const dbUser = process.env.DB_USER || "postgres";
-const dbPassword = process.env.DB_PASSWORD || "";
-const dbHost = process.env.DB_HOST || "localhost";
-const dbDialect = process.env.DB_DIALECT || "postgres";
+const dbName = process.env.DB_NAME || 'wiki_app';
+const dbUser = process.env.DB_USER || 'postgres';
+const dbPassword = process.env.DB_PASSWORD || '';
+const dbHost = process.env.DB_HOST || 'localhost';
+const dbDialect = process.env.DB_DIALECT || 'postgres';
 
 const db = {};
 
@@ -23,7 +23,7 @@ const sequelize = new Sequelize(dbName, dbUser, dbPassword, {
 });
 
 const modelFiles = readdirSync(modelsDir).filter(
-  (file) => file !== "index.js" && file.endsWith(".js")
+  (file) => file !== 'index.js' && file.endsWith('.js')
 );
 
 for (const file of modelFiles) {
