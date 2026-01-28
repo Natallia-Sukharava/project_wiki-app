@@ -22,6 +22,7 @@ config/config.json is required only for sequelize-cli (migrations).
 The application runtime uses environment variables from backend/.env.
 
 ## Authentication & Security
+
 ### Backend Authentication
 
 JWT-based authentication is implemented.
@@ -35,33 +36,32 @@ Only article creators or admins can edit articles.
 User management is available to admins only.  
 Access control is enforced on both backend and frontend.
 
-
 ## Project structure
 
 project_wiki-app/
 │
 ├── backend/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── migrations/
-│   │── uploads/
-│   ├── .env      
-│   ├── .env.example       
-│   └── server.js        
+│ ├── controllers/
+│ ├── models/
+│ ├── routes/
+│ ├── migrations/
+│ │── uploads/
+│ ├── .env  
+│ ├── .env.example  
+│ └── server.js  
 │
 ├── frontend/
-│   ├── src/
-│   │   ├── api/  
-│   │   ├── components/
-│   │   │   ├── articles/  
-│   │   │   └── layout/    
-│   │   ├── pages/         
-│   │   ├── styles/       
-│   │   └── main.jsx
-│   │   └── App.jsx
-│   └── vite.config.js
-│   └── eslint.config.js
+│ ├── src/
+│ │ ├── api/  
+│ │ ├── components/
+│ │ │ ├── articles/  
+│ │ │ └── layout/  
+│ │ ├── pages/  
+│ │ ├── styles/  
+│ │ └── main.jsx
+│ │ └── App.jsx
+│ └── vite.config.js
+│ └── eslint.config.js
 │── README.md
 │── .gitignore
 
@@ -72,19 +72,23 @@ project_wiki-app/
 The backend is built with Express + PostgreSQL + Sequelize ORM.
 
 ### REST API
-GET    /api/articles        list articles
-GET    /api/articles/:id    get a single article
-POST   /api/articles        create an article
-PUT    /api/articles/:id    update an article (creates a new version)
-GET    /api/article/:id/with-current   list article versions with current flag
-GET    /api/version/:versionId         get a specific article version (read-only)
-DELETE /api/articles/:id    delete an article
+
+GET /api/articles list articles
+GET /api/articles/:id get a single article
+GET /api/articles/:id/pdf export article as PDF
+GET /api/articles/:id/versions list article versions
+POST /api/articles create an article
+PUT /api/articles/:id update an article (creates a new version)
+GET /api/article/:id/with-current list article versions with current flag
+GET /api/version/:versionId get a specific article version (read-only)
+DELETE /api/articles/:id delete an article
 
 ### Workspaces API
-GET    /api/workspaces              list all workspaces
-POST   /api/workspaces              create workspace
-GET    /api/workspaces/:id          get workspace by id
-GET    /api/workspaces/:id/articles list articles inside a workspace
+
+GET /api/workspaces list all workspaces
+POST /api/workspaces create workspace
+GET /api/workspaces/:id get workspace by id
+GET /api/workspaces/:id/articles list articles inside a workspace
 
 ### Article versioning
 
@@ -100,6 +104,16 @@ Editing is disabled
 Attachments and comments are hidden, as they are not versioned entities
 Users can return to the latest version via a dedicated button
 
+### PDF Export
+
+Articles can be exported as PDF files from the article page.
+
+The exported PDF includes:
+Article title
+Article content
+Author
+Workspace
+Creation date
 
 ### Data storage
 
@@ -124,17 +138,16 @@ User registers using Register Page
 User logs in using Login Page
 Received JWT + user info stored in localStorage
 Navbar dynamically changes:
-  Guest → Login, Register
-  Authenticated user → Home, New Article, New Workspace, Logout + email
+Guest → Login, Register
+Authenticated user → Home, New Article, New Workspace, Logout + email
 When JWT expires or becomes invalid:
-  user session is cleared
-  user is redirected to Login page
+user session is cleared
+user is redirected to Login page
 
-  ## User Management (Admin only)
+## User Management (Admin only)
 
 Admins can view all users and change their roles (admin/user).  
 This page is hidden from regular users and protected by backend authorization.
-
 
 ## Installation
 
